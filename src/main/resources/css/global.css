@@ -1,0 +1,45 @@
+.btn-menu {
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 36px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Button variations */
+.btn-primary {
+    -fx-background-color: #007bff;
+}
+
+.btn-secondary {
+    -fx-background-color: #6c757d;
+}
+
+.btn-success {
+    -fx-background-color: #28a745;
+}
+
+.btn-danger {
+    -fx-background-color: #dc3545;
+}
+
+.btn-warning {
+    -fx-background-color: #ffc107;
+}
+
+.btn-info {
+    -fx-background-color: #17a2b8;
+}
+
+.btn-light {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: black;
+}
+
+.btn-dark {
+    -fx-background-color: #343a40;
+}
+
+.btn:hover {
+    -fx-background-color: #383d42;
+}
