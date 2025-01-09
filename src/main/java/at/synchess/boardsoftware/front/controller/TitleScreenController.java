@@ -1,5 +1,6 @@
 package at.synchess.boardsoftware.front.controller;
 
+import at.synchess.boardsoftware.Main;
 import at.synchess.boardsoftware.core.utils.RaspiManager;
 import at.synchess.boardsoftware.enums.Selection;
 import at.synchess.boardsoftware.front.model.AppManager;
@@ -11,7 +12,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 
@@ -21,8 +26,6 @@ import java.io.IOException;
  * @author Luca Marth
  */
 public class TitleScreenController {
-    private static final String INTERFACE_NAME = "enp0s3";
-
     private AppManager appManager;
 
     @FXML private Label ipLbl;
@@ -30,6 +33,9 @@ public class TitleScreenController {
     @FXML private Button developerButton;
     @FXML private Button firstButton;
     @FXML private Button secondButton;
+    @FXML private Button backButton;
+    @FXML private Line line;
+    @FXML private VBox lineLogoHolder;
 
     /**
      * show(): Shows the current scene
@@ -50,7 +56,7 @@ public class TitleScreenController {
         Scene s = new Scene(root);
 
         primaryStage.setTitle("SynChess - You Won't see this");
-        //primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true);
         primaryStage.setScene(s);
         primaryStage.show();
     }
@@ -68,7 +74,12 @@ public class TitleScreenController {
 
     @FXML
     public void OnActionDeveloperButton(ActionEvent event) {
-
+        try {
+            appManager.showDeveloperScreen();
+        } catch (IOException e) {
+            System.err.println("Couldn't show developer screen");
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -106,6 +117,11 @@ public class TitleScreenController {
 
     }
 
+    @FXML
+    void onBackButtonPressed(ActionEvent event) {
+        switchSelection(Selection.NONE);
+    }
+
 
     // ***********
 
@@ -116,12 +132,14 @@ public class TitleScreenController {
      */
     public void switchSelection(Selection s) {
         firstButton.setVisible(true);
-        secondButton.setVisible(false);
+        secondButton.setVisible(true);
+        backButton.setVisible(true);
 
         switch (s){
             case NONE:
                 firstButton.setText("Play");
                 secondButton.setText("Replay");
+                backButton.setVisible(false);
 
                 firstButton.setOnAction(this::OnPlay);
                 secondButton.setOnAction(this::OnReplay);
@@ -151,18 +169,24 @@ public class TitleScreenController {
     @FXML
     public void initialize() {
         // pre-set ip label text on network address
-        ipLbl.setText((NetworkManager.getIpV4AddressAsString(INTERFACE_NAME).isEmpty()) ? "127.0.0.1" : NetworkManager.getIpV4AddressAsString(INTERFACE_NAME));
+        ipLbl.setText((NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME).isEmpty()) ? "127.0.0.1" : NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME));
 
         // set button icons
-//        FontAwesomeIconView turnoff = new FontAwesomeIconView(FontAwesomeIcon.POWER_OFF);
-//        FontAwesomeIconView dev = new FontAwesomeIconView(FontAwesomeIcon.CODE);
-//
-//        turnoff.setSize("16px");
-//        turnoff.setFill(Color.WHITE);
-//        dev.setSize("16px");
-//        dev.setFill(Color.WHITE);
-//
-//        turnOffButton.setGraphic(turnoff);
-//        developerButton.setGraphic(dev);
+        FontIcon turnoff = new FontIcon("fas-power-off");
+        FontIcon dev = new FontIcon("fas-code");
+        FontIcon back = new FontIcon("fas-long-arrow-alt-left");
+
+        turnoff.setIconSize(16);
+        turnoff.setFill(Color.WHITE);
+        dev.setIconSize(16);
+        dev.setFill(Color.WHITE);
+        back.setIconSize(32);
+        back.setFill(Color.WHITE);
+
+        turnOffButton.setGraphic(turnoff);
+        developerButton.setGraphic(dev);
+        backButton.setGraphic(back);
+
+        line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
     }
 }

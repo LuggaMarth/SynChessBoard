@@ -11,11 +11,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>21</javafx.version>
+        <javafx.version>23</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
 
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -49,9 +49,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.scream3r</groupId>
+            <groupId>io.github.java-native</groupId>
             <artifactId>jssc</artifactId>
-            <version>2.8.0</version>
+            <version>2.9.6</version>
         </dependency>
 
         <dependency>
@@ -67,6 +67,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>at.synchess</groupId>
             <artifactId>ChessUtils</artifactId>
             <version>1.0</version>
@@ -74,5 +86,15 @@
             <systemPath>${project.basedir}/src/main/resources/lib/ChessUtils.jar</systemPath>
         </dependency>
 
+            <dependency>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-javafx</artifactId>
+                <version>12.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-fontawesome5-pack</artifactId>
+                <version>12.3.1</version>
+            </dependency>
     </dependencies>
 </project>

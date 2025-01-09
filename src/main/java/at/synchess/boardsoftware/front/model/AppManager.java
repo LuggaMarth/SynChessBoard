@@ -34,6 +34,12 @@ public class AppManager {
         TitleScreenController.show(getPrimaryStage(), this);
     }
 
-    
+    /**
+     * showDeveloperScreen(): Shows the developer Screen
+     * @throws IOException
+     */
+    public void showDeveloperScreen() throws IOException {
+
+    }
 
 }
