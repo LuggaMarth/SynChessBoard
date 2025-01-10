@@ -23,14 +23,22 @@ import java.io.IOException;
 public class CodeScreenController {
     private AppManager appManager;
 
-    @FXML private Label ipLbl;
-    @FXML private Button developerButton;
-    @FXML private Button turnOffButton;
-    @FXML private Button backButton;
-    @FXML private VBox lineLogoHolder;
-    @FXML private ImageView logoImg;
-    @FXML private Line line;
-    @FXML private Label code;
+    @FXML
+    private Label ipLbl;
+    @FXML
+    private Button developerButton;
+    @FXML
+    private Button turnOffButton;
+    @FXML
+    private Button backButton;
+    @FXML
+    private VBox lineLogoHolder;
+    @FXML
+    private ImageView logoImg;
+    @FXML
+    private Line line;
+    @FXML
+    private Label code;
 
     public static void show(Stage primaryStage, AppManager logic) throws IOException {
         // Load FXML
@@ -44,10 +52,8 @@ public class CodeScreenController {
         // init scene and stage
         Scene s = new Scene(root);
 
-        primaryStage.setTitle("SynChess - You Won't see this");
-        primaryStage.setFullScreen(true);
         primaryStage.setScene(s);
-        primaryStage.show();
+        primaryStage.setFullScreen(true);
     }
 
     // setter
@@ -75,52 +81,38 @@ public class CodeScreenController {
     void onBackButtonPressed(ActionEvent event) throws IOException {
         appManager.showTitleScreen();
     }
+
     @FXML
     void numClick(ActionEvent event) {
         Button b = (Button) event.getSource();
         enterNumber(Integer.parseInt(b.getText()));
     }
 
-    void enterNumber(int i){
+    void enterNumber(int i) {
         if (code.getText().length() < 8)
-        code.setText(code.getText() + i);
+            code.setText(code.getText() + i);
     }
-
 
     @FXML
     void deleteNum(ActionEvent event) {
-        if (code.getText().length() > 0)
-            code.setText(code.getText().substring(0,code.getText().length() - 1));
+        if (!code.getText().isEmpty())
+            code.setText(code.getText().substring(0, code.getText().length() - 1));
     }
 
     @FXML
-    void sendCode(ActionEvent event){
+    void sendCode(ActionEvent event) {
+
     }
+
     @FXML
     public void initialize() {
         // pre-set ip label text on network address
         ipLbl.setText((NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME).isEmpty()) ? "127.0.0.1" : NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME));
 
-        // set button icons
-        FontIcon turnoff = new FontIcon("fas-power-off");
-        FontIcon dev = new FontIcon("fas-code");
-        FontIcon back = new FontIcon("fas-long-arrow-alt-left");
-
-
-        turnoff.setIconSize(16);
-        turnoff.setFill(Color.WHITE);
-        dev.setIconSize(16);
-        dev.setFill(Color.WHITE);
-        back.setIconSize(32);
-        back.setFill(Color.WHITE);
-
-        turnOffButton.setGraphic(turnoff);
-        developerButton.setGraphic(dev);
-        backButton.setGraphic(back);
+        turnOffButton.setGraphic(GlobalController.getFontIcon("fas-power-off", 16, Color.WHITE));
+        developerButton.setGraphic(GlobalController.getFontIcon("fas-code", 16, Color.WHITE));
+        backButton.setGraphic(GlobalController.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
 
         line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
-
     }
-
-
 }

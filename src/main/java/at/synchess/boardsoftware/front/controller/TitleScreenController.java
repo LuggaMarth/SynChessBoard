@@ -18,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.w3c.dom.Node;
 
 import java.io.IOException;
 
@@ -191,29 +190,12 @@ public class TitleScreenController {
     @FXML
     public void initialize() {
         // pre-set ip label text on network address
-        ipLbl.setText((NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME).isEmpty()) ? "127.0.0.1" : NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME));
+        ipLbl.setText(NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME));
 
-        // set button icons
-        FontIcon turnoff = new FontIcon("fas-power-off");
-        FontIcon dev = new FontIcon("fas-code");
-        FontIcon back = new FontIcon("fas-long-arrow-alt-left");
-
-
-        turnoff.setIconSize(16);
-        turnoff.setFill(Color.WHITE);
-        dev.setIconSize(16);
-        dev.setFill(Color.WHITE);
-        back.setIconSize(32);
-        back.setFill(Color.WHITE);
-
-        turnOffButton.setGraphic(turnoff);
-        developerButton.setGraphic(dev);
-        backButton.setGraphic(back);
+        turnOffButton.setGraphic(GlobalController.getFontIcon("fas-power-off", 16, Color.WHITE));
+        developerButton.setGraphic(GlobalController.getFontIcon("fas-code", 16, Color.WHITE));
+        backButton.setGraphic(GlobalController.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
 
         line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
-
     }
-
-
-
 }

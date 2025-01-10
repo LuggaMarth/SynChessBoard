@@ -43,8 +43,8 @@ public class AppManager {
 
     }
 
-    public void showCodeScreen()throws IOException{
-        CodeScreenController.show(primaryStage, this);
+    public void showCodeScreen()throws IOException {
+        CodeScreenController.show(getPrimaryStage(), this);
     }
 
 }

@@ -13,13 +13,15 @@ import java.util.Enumeration;
  * @author Luca Marth
  */
 public class NetworkManager {
+    private static final String LOCALHOST = "127.0.0.1";
+
     public static String getIpV4AddressAsString(String interfaceName) {
         try {
             // get interface by name
             NetworkInterface intf = NetworkInterface.getByName(interfaceName);
 
             // pre-check if not available
-            if (intf == null) return "";
+            if (intf == null) return LOCALHOST;
 
             // fetch all addresses
             Enumeration<InetAddress> addresses = intf.getInetAddresses();
@@ -30,7 +32,7 @@ public class NetworkManager {
             }
 
             // if no match, return nothing
-            return "";
+            return LOCALHOST;
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
