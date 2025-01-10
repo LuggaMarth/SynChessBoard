@@ -13,10 +13,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 
@@ -36,6 +38,8 @@ public class TitleScreenController {
     @FXML private Button backButton;
     @FXML private Line line;
     @FXML private VBox lineLogoHolder;
+
+
 
     /**
      * show(): Shows the current scene
@@ -82,6 +86,10 @@ public class TitleScreenController {
         }
     }
 
+
+
+
+
     @FXML
     public void OnPlay(ActionEvent event) {
         switchSelection(Selection.PLAY);
@@ -94,7 +102,7 @@ public class TitleScreenController {
 
     @FXML
     public void OnJoin(ActionEvent event) {
-
+        switchSelection(Selection.JOIN);
     }
 
     @FXML
@@ -104,11 +112,16 @@ public class TitleScreenController {
 
     @FXML
     private void OnEnterCodeJoin(ActionEvent e) {
-
+        loadCodeMenu();
     }
 
     @FXML
     private void OnBrowseGames(ActionEvent e) {
+
+    }
+
+    @FXML
+    private void OnBrowseReplays(ActionEvent e) {
 
     }
 
@@ -156,13 +169,22 @@ public class TitleScreenController {
                 secondButton.setText("Browse Games");
 
                 firstButton.setOnAction(this::OnEnterCodeHost);
-                secondButton.setOnAction(this::OnBrowseGames);
+                secondButton.setOnAction(this::OnBrowseReplays);
             case JOIN:
                 firstButton.setText("Enter Code");
-                secondButton.setVisible(false);
+                secondButton.setText("Browse Games");
 
                 firstButton.setOnAction(this::OnEnterCodeJoin);
+                secondButton.setOnAction(this::OnBrowseGames);
                 break;
+        }
+    }
+
+    private void loadCodeMenu(){
+        try {
+            appManager.showCodeScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -176,6 +198,7 @@ public class TitleScreenController {
         FontIcon dev = new FontIcon("fas-code");
         FontIcon back = new FontIcon("fas-long-arrow-alt-left");
 
+
         turnoff.setIconSize(16);
         turnoff.setFill(Color.WHITE);
         dev.setIconSize(16);
@@ -188,5 +211,9 @@ public class TitleScreenController {
         backButton.setGraphic(back);
 
         line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
+
     }
+
+
+
 }

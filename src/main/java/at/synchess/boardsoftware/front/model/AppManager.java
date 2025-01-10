@@ -1,6 +1,7 @@
 package at.synchess.boardsoftware.front.model;
 
 import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
+import at.synchess.boardsoftware.front.controller.CodeScreenController;
 import at.synchess.boardsoftware.front.controller.TitleScreenController;
 import javafx.stage.Stage;
 
@@ -40,6 +41,10 @@ public class AppManager {
      */
     public void showDeveloperScreen() throws IOException {
 
+    }
+
+    public void showCodeScreen()throws IOException{
+        CodeScreenController.show(primaryStage, this);
     }
 
 }
