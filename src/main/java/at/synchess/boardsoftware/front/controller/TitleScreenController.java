@@ -55,12 +55,13 @@ public class TitleScreenController {
         TitleScreenController controller = loader.getController();
         controller.setAppManager(logic);
 
-        // init scene and stage
-        Scene s = new Scene(root);
 
         primaryStage.setTitle("SynChess - You Won't see this");
         primaryStage.setFullScreen(true);
-        primaryStage.setScene(s);
+
+        if (primaryStage.getScene() != null)
+        primaryStage.getScene().setRoot(root);
+        else primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

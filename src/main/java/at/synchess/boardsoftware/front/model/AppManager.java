@@ -3,6 +3,7 @@ package at.synchess.boardsoftware.front.model;
 import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
 import at.synchess.boardsoftware.front.controller.CodeScreenController;
 import at.synchess.boardsoftware.front.controller.TitleScreenController;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class AppManager {
 
     public AppManager(Stage primaryStage) {
         this.primaryStage = primaryStage;
+
 
         driver = new SCDCommandLayer();
     }

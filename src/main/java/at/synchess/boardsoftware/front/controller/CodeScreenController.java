@@ -49,10 +49,7 @@ public class CodeScreenController {
         CodeScreenController controller = loader.getController();
         controller.setAppManager(logic);
 
-        // init scene and stage
-        Scene s = new Scene(root);
-
-        primaryStage.setScene(s);
+        primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
     }
 
