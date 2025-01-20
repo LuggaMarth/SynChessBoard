@@ -3,6 +3,7 @@ package at.synchess.boardsoftware.front.controller;
 import at.synchess.boardsoftware.Main;
 import at.synchess.boardsoftware.core.utils.NetworkManager;
 import at.synchess.boardsoftware.core.utils.RaspiManager;
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.application.Platform;
@@ -16,12 +17,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class CodeScreenController {
     private AppManager appManager;
+    private Stage primaryStage;
 
     @FXML
     private Label ipLbl;
@@ -48,6 +52,7 @@ public class CodeScreenController {
         // get controller from fxml file and basic setup
         CodeScreenController controller = loader.getController();
         controller.setAppManager(logic);
+        controller.setPrimaryStage(primaryStage);
 
         primaryStage.getScene().setRoot(root);
         Platform.runLater(() -> primaryStage.setFullScreen(true));
@@ -56,6 +61,9 @@ public class CodeScreenController {
     // setter
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
+    }
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     // ***** METHODS for actions
@@ -68,15 +76,18 @@ public class CodeScreenController {
     public void OnActionDeveloperButton(ActionEvent event) {
         try {
             appManager.showDeveloperScreen();
-        } catch (IOException e) {
-            System.err.println("Couldn't show developer screen");
-            e.printStackTrace();
+        } catch (AppManagerException e) {
+            ControllerUtils.showAppManagerAlert(e,primaryStage);
         }
     }
 
     @FXML
     void onBackButtonPressed(ActionEvent event) throws IOException {
-        appManager.showTitleScreen();
+        try {
+            appManager.showTitleScreen();
+        } catch (AppManagerException e) {
+            ControllerUtils.showAppManagerAlert(e,primaryStage);
+        }
     }
 
     @FXML

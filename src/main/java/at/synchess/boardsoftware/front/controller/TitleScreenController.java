@@ -3,6 +3,7 @@ package at.synchess.boardsoftware.front.controller;
 import at.synchess.boardsoftware.Main;
 import at.synchess.boardsoftware.core.utils.RaspiManager;
 import at.synchess.boardsoftware.enums.Selection;
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.core.utils.NetworkManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -28,6 +30,7 @@ import java.io.IOException;
  */
 public class TitleScreenController {
     private AppManager appManager;
+    private Stage primaryStage;
 
     @FXML private Label ipLbl;
     @FXML private Button turnOffButton;
@@ -37,6 +40,7 @@ public class TitleScreenController {
     @FXML private Button backButton;
     @FXML private Line line;
     @FXML private VBox lineLogoHolder;
+
 
 
 
@@ -54,6 +58,7 @@ public class TitleScreenController {
         // get controller from fxml file and basic setup
         TitleScreenController controller = loader.getController();
         controller.setAppManager(logic);
+        controller.setPrimaryStage(primaryStage);
 
 
         primaryStage.setTitle("SynChess - You Won't see this");
@@ -70,6 +75,10 @@ public class TitleScreenController {
         this.appManager = appManager;
     }
 
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
     // ***** METHODS for actions
     @FXML
     public void OnActionTurnOffButton(ActionEvent event) {
@@ -80,9 +89,8 @@ public class TitleScreenController {
     public void OnActionDeveloperButton(ActionEvent event) {
         try {
             appManager.showDeveloperScreen();
-        } catch (IOException e) {
-            System.err.println("Couldn't show developer screen");
-            e.printStackTrace();
+        } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
         }
     }
 
@@ -119,9 +127,9 @@ public class TitleScreenController {
     private void OnBrowseGames(ActionEvent e) {
         try {
             appManager.showGameList();
-        } catch (IOException m ) {
-            m.printStackTrace();
-        }
+            } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
+            }
 
     }
 
@@ -188,8 +196,8 @@ public class TitleScreenController {
     private void loadCodeMenu(){
         try {
             appManager.showCodeScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
         }
     }
 

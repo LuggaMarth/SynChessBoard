@@ -1,6 +1,7 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.core.utils.RaspiManager;
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ChessClient;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
@@ -10,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -24,6 +26,7 @@ import java.io.IOException;
 public class GameListController {
     private AppManager appManager;
     private ChessClient client;
+    private Stage primaryStage;
     private ObservableList<String> games;
 
     @FXML private Label ipLbl;
@@ -44,7 +47,9 @@ public class GameListController {
         GameListController controller = loader.getController();
         controller.setAppManager(logic);
         controller.setClient(client);
+        controller.setPrimaryStage(primaryStage);
         controller.reloadList();
+
 
         primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
@@ -57,6 +62,10 @@ public class GameListController {
 
     public void setClient(ChessClient chessClient) {
         this.client = chessClient;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     // ***** METHODS for actions
@@ -72,11 +81,12 @@ public class GameListController {
                     if (selectedItem != null) {
                         try {
                             appManager.showGame(Integer.parseInt(selectedItem));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                            } catch (AppManagerException e) {
+                                ControllerUtils.showAppManagerAlert(e,primaryStage);
+                            }
                     }
                 }
+
             });
 
         }
@@ -97,15 +107,18 @@ public class GameListController {
     public void OnActionDeveloperButton(ActionEvent event) {
         try {
             appManager.showDeveloperScreen();
-        } catch (IOException e) {
-            System.err.println("Couldn't show developer screen");
-            e.printStackTrace();
+        } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
         }
     }
 
     @FXML
     void onBackButtonPressed(ActionEvent event) throws IOException {
+        try{
         appManager.showTitleScreen();
+        } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
+        }
     }
 
     public void initialize() {

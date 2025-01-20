@@ -14,6 +14,7 @@
 
 <BorderPane maxHeight="455.0" maxWidth="600.0" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="420.0" prefWidth="600.0" stylesheets="@/css/global.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.synchess.boardsoftware.front.controller.TitleScreenController">
 <bottom>
+   <VBox>
       <HBox alignment="BOTTOM_LEFT" prefHeight="22.0" prefWidth="560.0" BorderPane.alignment="BOTTOM_LEFT">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
@@ -49,6 +50,7 @@
             </HBox>
          </children>
       </HBox>
+   </VBox>
    </bottom>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

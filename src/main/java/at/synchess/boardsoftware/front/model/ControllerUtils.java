@@ -1,6 +1,10 @@
 package at.synchess.boardsoftware.front.model;
 
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import javafx.scene.paint.Color;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class ControllerUtils {
@@ -11,4 +15,11 @@ public class ControllerUtils {
 
         return ret;
     }
+    public static void showAppManagerAlert(AppManagerException ae, Stage primStage){
+        Alert a = new Alert(AlertType.ERROR);
+        a.setContentText("Failed building View: " + ae.getController().getSimpleName());
+        a.initOwner(primStage);
+        a.show();
+    }
+
 }

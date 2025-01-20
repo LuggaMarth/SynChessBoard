@@ -1,6 +1,7 @@
 package at.synchess.boardsoftware.front.model;
 
 import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.controller.*;
 import javafx.stage.Stage;
 
@@ -33,31 +34,53 @@ public class AppManager {
     /**
      * showTitleScreen(): Shows the main menu.
      */
-    public void showTitleScreen() throws IOException {
-        TitleScreenController.show(getPrimaryStage(), this);
+    public void showTitleScreen() throws AppManagerException {
+        try {
+            TitleScreenController.show(getPrimaryStage(), this);
+        } catch (IOException e) {
+            throw new AppManagerException(TitleScreenController.class);
+        }
     }
 
     /**
      * showDeveloperScreen(): Shows the developer Screen
+     *
      * @throws IOException
      */
-    public void showDeveloperScreen() throws IOException {
-        DevScreenController.show(getPrimaryStage(), this);
+    public void showDeveloperScreen() throws AppManagerException {
+        try {
+            DevScreenController.show(getPrimaryStage(), this);
+        } catch (IOException e) {
+            throw new AppManagerException(DevScreenController.class);
+        }
     }
 
-    public void showCodeScreen()throws IOException {
-        CodeScreenController.show(getPrimaryStage(), this);
+    public void showCodeScreen() throws AppManagerException {
+        try {
+            CodeScreenController.show(getPrimaryStage(), this);
+        } catch (IOException e) {
+            throw new AppManagerException(CodeScreenController.class);
+        }
     }
 
-    public ChessClient getClient(){
+    public ChessClient getClient() {
         return client;
     }
 
-    public void showGameList()throws IOException {
-        GameListController.show(getPrimaryStage(), this, client);
+    public void showGameList() throws AppManagerException {
+        try {
+            GameListController.show(getPrimaryStage(), this, client);
+        } catch (IOException e) {
+            throw new AppManagerException(GameListController.class);
+        }
+
     }
 
-    public void showGame(int gameId) throws IOException {
-        GameController.show(getPrimaryStage(),this, gameId);
+    public void showGame(int gameId) throws AppManagerException {
+        try {
+            GameController.show(getPrimaryStage(), this, gameId);
+        } catch (IOException e) {
+            throw new AppManagerException(GameController.class);
+        }
     }
 }

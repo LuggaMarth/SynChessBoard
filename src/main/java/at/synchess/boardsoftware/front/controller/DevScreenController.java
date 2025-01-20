@@ -1,16 +1,13 @@
 package at.synchess.boardsoftware.front.controller;
 
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,6 +20,7 @@ import java.util.Properties;
 
 public class DevScreenController {
     private AppManager manager;
+    private Stage primaryStage;
 
     @FXML private Button backButton;
     @FXML private ToggleGroup commandSelector;
@@ -48,28 +46,38 @@ public class DevScreenController {
      * @throws IOException if file could not be found
      */
     public static void show(Stage primaryStage, AppManager logic) throws IOException {
+        throw new IOException();
+        /*
         // Load FXML
+
         FXMLLoader loader = new FXMLLoader(DevScreenController.class.getResource("/view/devView.fxml"));
         Parent root = loader.load();
 
         // get controller from fxml file and basic setup
         DevScreenController controller = loader.getController();
         controller.setManager(logic);
+        controller.setPrimaryStage(primaryStage);
 
         primaryStage.getScene().setRoot(root);
         primaryStage.show();
+
+         */
     }
 
     public void setManager(AppManager manager) {
         this.manager = manager;
     }
 
+    public void setPrimaryStage(Stage primaryStage){
+        this.primaryStage = primaryStage;
+    }
+
     @FXML
     void onActionBackButton(ActionEvent event) {
         try {
             manager.showTitleScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
         }
     }
 

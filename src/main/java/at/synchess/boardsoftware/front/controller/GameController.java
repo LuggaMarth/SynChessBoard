@@ -37,7 +37,6 @@ public class GameController {
         this.appManager = appManager;
     }
 
-
     public static void show(Stage primaryStage, AppManager logic, int gameId) throws IOException {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(GameController.class.getResource("/view/gameView.fxml"));
@@ -52,9 +51,6 @@ public class GameController {
         controller.gameId = gameId;
         controller.gameBanner.setText("Current Game: " + gameId);
 
-        // init scene and stage
-        Scene s = new Scene(root);
-
         primaryStage.getScene().setRoot(root);
         primaryStage.show();
     }
@@ -66,18 +62,18 @@ public class GameController {
         currPieces = new ArrayList<>();
         // Initialize the chess pieces on the board
         pieceImages = new Image[]{
-                new Image(getClass().getResource("../view/pieces/white_Pawn.png").toString()),
-                new Image(getClass().getResource("../view/pieces/black_Pawn.png").toString()),
-                new Image(getClass().getResource("../view/pieces/white_Rook.png").toString()),
-                new Image(getClass().getResource("../view/pieces/black_Rook.png").toString()),
-                new Image(getClass().getResource("../view/pieces/white_Knight.png").toString()),
-                new Image(getClass().getResource("../view/pieces/black_Knight.png").toString()),
-                new Image(getClass().getResource("../view/pieces/white_Bishop.png").toString()),
-                new Image(getClass().getResource("../view/pieces/black_Bishop.png").toString()),
-                new Image(getClass().getResource("../view/pieces/white_Queen.png").toString()),
-                new Image(getClass().getResource("../view/pieces/black_Queen.png").toString()),
-                new Image(getClass().getResource("../view/pieces/white_King.png").toString()),
-                new Image(getClass().getResource("../view/pieces/black_King.png").toString())};
+                new Image(getClass().getResource("/images/pieces/white_Pawn.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_Pawn.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_Rook.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_Rook.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_Knight.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_Knight.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_Bishop.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_Bishop.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_Queen.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_Queen.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_King.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_King.png").toString())};
 
 
     }
