@@ -3,6 +3,7 @@ package at.synchess.boardsoftware.front.controller;
 import at.synchess.boardsoftware.core.utils.RaspiManager;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ChessClient;
+import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
@@ -46,8 +48,6 @@ public class GameListController {
 
         primaryStage.getScene().setRoot(root);
         primaryStage.setFullScreen(true);
-
-
     }
 
     // setter
@@ -106,5 +106,11 @@ public class GameListController {
     @FXML
     void onBackButtonPressed(ActionEvent event) throws IOException {
         appManager.showTitleScreen();
+    }
+
+    public void initialize() {
+        turnOffButton.setGraphic(ControllerUtils.getFontIcon("fas-power-off", 16, Color.WHITE));
+        developerButton.setGraphic(ControllerUtils.getFontIcon("fas-code", 16, Color.WHITE));
+        backButton.setGraphic(ControllerUtils.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
     }
 }

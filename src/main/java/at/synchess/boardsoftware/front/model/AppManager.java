@@ -1,11 +1,7 @@
 package at.synchess.boardsoftware.front.model;
 
 import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
-import at.synchess.boardsoftware.front.controller.CodeScreenController;
-import at.synchess.boardsoftware.front.controller.GameController;
-import at.synchess.boardsoftware.front.controller.GameListController;
-import at.synchess.boardsoftware.front.controller.TitleScreenController;
-import javafx.scene.Scene;
+import at.synchess.boardsoftware.front.controller.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -46,7 +42,7 @@ public class AppManager {
      * @throws IOException
      */
     public void showDeveloperScreen() throws IOException {
-
+        DevScreenController.show(getPrimaryStage(), this);
     }
 
     public void showCodeScreen()throws IOException {

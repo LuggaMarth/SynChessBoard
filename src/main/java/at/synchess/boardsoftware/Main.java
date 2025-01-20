@@ -17,7 +17,6 @@ public class Main extends Application {
     public AppManager appManager;
 
     public static void main(String[] args) {
-        //INTERFACE_NAME = args[0];
         launch(args);
     }
 

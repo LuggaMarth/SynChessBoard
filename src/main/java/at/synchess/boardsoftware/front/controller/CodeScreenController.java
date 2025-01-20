@@ -4,11 +4,12 @@ import at.synchess.boardsoftware.Main;
 import at.synchess.boardsoftware.core.utils.NetworkManager;
 import at.synchess.boardsoftware.core.utils.RaspiManager;
 import at.synchess.boardsoftware.front.model.AppManager;
+import at.synchess.boardsoftware.front.model.ControllerUtils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -16,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 
@@ -50,7 +50,7 @@ public class CodeScreenController {
         controller.setAppManager(logic);
 
         primaryStage.getScene().setRoot(root);
-        primaryStage.setFullScreen(true);
+        Platform.runLater(() -> primaryStage.setFullScreen(true));
     }
 
     // setter
@@ -106,9 +106,9 @@ public class CodeScreenController {
         // pre-set ip label text on network address
         ipLbl.setText((NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME).isEmpty()) ? "127.0.0.1" : NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME));
 
-        turnOffButton.setGraphic(GlobalController.getFontIcon("fas-power-off", 16, Color.WHITE));
-        developerButton.setGraphic(GlobalController.getFontIcon("fas-code", 16, Color.WHITE));
-        backButton.setGraphic(GlobalController.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
+        turnOffButton.setGraphic(ControllerUtils.getFontIcon("fas-power-off", 16, Color.WHITE));
+        developerButton.setGraphic(ControllerUtils.getFontIcon("fas-code", 16, Color.WHITE));
+        backButton.setGraphic(ControllerUtils.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
 
         line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
     }

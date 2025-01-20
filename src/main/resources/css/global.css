@@ -1,9 +1,12 @@
 .btn-menu {
+    -fx-font-size: 36pt;
+    -fx-font-weight: bold;
+}
+
+.btn {
+    -fx-text-fill: white;
     -fx-padding: 6px 12px;
     -fx-background-radius: 4px;
-    -fx-font-size: 36px;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
 }
 
 /* Button variations */

@@ -2,6 +2,7 @@ package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.utils.ChessUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -51,14 +52,10 @@ public class GameController {
         controller.gameId = gameId;
         controller.gameBanner.setText("Current Game: " + gameId);
 
-
-
         // init scene and stage
         Scene s = new Scene(root);
 
-        primaryStage.setTitle("SynChess - You Won't see this");
-        //primaryStage.setFullScreen(true);
-        primaryStage.setScene(s);
+        primaryStage.getScene().setRoot(root);
         primaryStage.show();
     }
 
