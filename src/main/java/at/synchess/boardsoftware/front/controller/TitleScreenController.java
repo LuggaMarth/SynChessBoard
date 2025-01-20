@@ -117,6 +117,11 @@ public class TitleScreenController {
 
     @FXML
     private void OnBrowseGames(ActionEvent e) {
+        try {
+            appManager.showGameList();
+        } catch (IOException m ) {
+            m.printStackTrace();
+        }
 
     }
 
