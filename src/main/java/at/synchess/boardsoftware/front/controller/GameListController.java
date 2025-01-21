@@ -90,6 +90,8 @@ public class GameListController {
             });
 
         }
+
+        // TODO: Wenn Server nicht gestartet, dann stürtzt das hier ab
         games.setAll(client.getGameList(true));
     }
 
@@ -122,6 +124,8 @@ public class GameListController {
     }
 
     public void initialize() {
+        line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
+
         turnOffButton.setGraphic(ControllerUtils.getFontIcon("fas-power-off", 16, Color.WHITE));
         developerButton.setGraphic(ControllerUtils.getFontIcon("fas-code", 16, Color.WHITE));
         backButton.setGraphic(ControllerUtils.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
