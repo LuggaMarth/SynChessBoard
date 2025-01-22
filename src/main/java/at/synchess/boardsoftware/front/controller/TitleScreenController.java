@@ -22,6 +22,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Controller for the title screen
@@ -31,6 +32,12 @@ import java.io.IOException;
 public class TitleScreenController {
     private AppManager appManager;
     private Stage primaryStage;
+    private final String[][] buttonConf = new String[][]{
+            {"Play","Replay","OnPlay","OnReplay"}, //NONE
+            {"Join","Host","OnJoin","OnHost"}, //PLAY
+            {"Enter Code","Browse Replays","OnEnterCodeReplays","OnBrowseReplays"}, //REPLAY
+            {"Enter Code","Browse Games","OnEnterCodeJoin","OnBrowseGames"}, //JOIN
+            };
 
     @FXML private Label ipLbl;
     @FXML private Button turnOffButton;
@@ -40,9 +47,6 @@ public class TitleScreenController {
     @FXML private Button backButton;
     @FXML private Line line;
     @FXML private VBox lineLogoHolder;
-
-
-
 
     /**
      * show(): Shows the current scene
@@ -74,57 +78,35 @@ public class TitleScreenController {
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
     }
-
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     // ***** METHODS for actions
-    @FXML
-    public void OnActionTurnOffButton(ActionEvent event) {
+    @FXML public void OnActionTurnOffButton(ActionEvent event) {
         RaspiManager.shutdownRaspberry();
     }
-
-    @FXML
-    public void OnActionDeveloperButton(ActionEvent event) {
+    @FXML public void OnActionDeveloperButton(ActionEvent event) {
         try {
             appManager.showDeveloperScreen();
         } catch (AppManagerException appManagerException) {
             ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
         }
     }
-
-
-
-
-
-    @FXML
-    public void OnPlay(ActionEvent event) {
+    @FXML public void OnPlay(ActionEvent event) {
         switchSelection(Selection.PLAY);
     }
-
-    @FXML
-    public void OnReplay(ActionEvent event) {
+    @FXML public void OnReplay(ActionEvent event) {
         switchSelection(Selection.REPLAY);
     }
-
-    @FXML
-    public void OnJoin(ActionEvent event) {
+    @FXML public void OnJoin(ActionEvent event) {
         switchSelection(Selection.JOIN);
     }
-
-    @FXML
-    public void OnHost(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void OnEnterCodeJoin(ActionEvent e) {
+    @FXML public void OnHost(ActionEvent event) {}
+    @FXML private void OnEnterCodeJoin(ActionEvent e) {
         loadCodeMenu();
     }
-
-    @FXML
-    private void OnBrowseGames(ActionEvent e) {
+    @FXML private void OnBrowseGames(ActionEvent e) {
         try {
             appManager.showGameList();
             } catch (AppManagerException appManagerException) {
@@ -132,14 +114,10 @@ public class TitleScreenController {
             }
 
     }
-
-    @FXML
-    private void OnBrowseReplays(ActionEvent e) {
+    @FXML private void OnBrowseReplays(ActionEvent e) {
 
     }
-
-    @FXML
-    private void OnEnterCodeHost(ActionEvent e) {
+    @FXML private void OnEnterCodeHost(ActionEvent e) {
 
     }
 
@@ -153,44 +131,39 @@ public class TitleScreenController {
 
     /**
      * switchSelection(): switches the content and the onAction methods on the
-     * buttons.
+     * buttons. Uses the table buttonConfig
      * @param s selection to be switched to
      */
     public void switchSelection(Selection s) {
         firstButton.setVisible(true);
         secondButton.setVisible(true);
-        backButton.setVisible(true);
+        backButton.setVisible(s != Selection.NONE);
 
-        switch (s){
-            case NONE:
-                firstButton.setText("Play");
-                secondButton.setText("Replay");
-                backButton.setVisible(false);
+        int index = s.ordinal();
+        firstButton.setText(buttonConf[index][0]);
+        secondButton.setText(buttonConf[index][1]);
 
-                firstButton.setOnAction(this::OnPlay);
-                secondButton.setOnAction(this::OnReplay);
-                break;
-            case PLAY:
-                firstButton.setText("Join");
-                secondButton.setText("Host");
 
-                firstButton.setOnAction(this::OnJoin);
-                secondButton.setOnAction(this::OnHost);
-                break;
-            case REPLAY:
-                firstButton.setText("Enter Code");
-                secondButton.setText("Browse Games");
 
-                firstButton.setOnAction(this::OnEnterCodeHost);
-                secondButton.setOnAction(this::OnBrowseReplays);
-            case JOIN:
-                firstButton.setText("Enter Code");
-                secondButton.setText("Browse Games");
 
-                firstButton.setOnAction(this::OnEnterCodeJoin);
-                secondButton.setOnAction(this::OnBrowseGames);
-                break;
-        }
+        firstButton.setOnAction(event -> {
+                        try {
+                        (this.getClass().getMethod(buttonConf[index][2], new Class[]{ActionEvent.class})).invoke(this, new ActionEvent());
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                            //Technically can't occur I think?
+                            ControllerUtils.showServerAlert("Code's haunted", primaryStage);
+                        }
+                    });
+        secondButton.setOnAction(event -> {
+            try {
+                (this.getClass().getMethod(buttonConf[index][3],new Class[]{ActionEvent.class})).invoke(this, new ActionEvent());
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
+                //Technically can't occur I think?
+                ControllerUtils.showServerAlert("Code's haunted", primaryStage);
+            }
+        });
+
+
     }
 
     private void loadCodeMenu(){

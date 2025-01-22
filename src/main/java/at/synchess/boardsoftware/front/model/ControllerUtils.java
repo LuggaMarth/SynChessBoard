@@ -18,7 +18,7 @@ public class ControllerUtils {
 
     public static void showServerAlert(String message, Stage primStage){
         Alert a = new Alert(AlertType.ERROR);
-        a.setContentText("Server Error: ");
+        a.setContentText("Server Error: " + message);
         a.initOwner(primStage);
         a.show();
     }
