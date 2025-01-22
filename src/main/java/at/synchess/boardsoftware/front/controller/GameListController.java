@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 
@@ -70,7 +71,7 @@ public class GameListController {
 
     // ***** METHODS for actions
 
-    public void reloadList(){
+    public void reloadList() throws IOException{
         if (games == null) {
             games = FXCollections.observableArrayList();
             listView.setItems(games);
@@ -83,7 +84,9 @@ public class GameListController {
                             appManager.showGame(Integer.parseInt(selectedItem));
                             } catch (AppManagerException e) {
                                 ControllerUtils.showAppManagerAlert(e,primaryStage);
-                            }
+                            } catch (MqttException e) {
+                            ControllerUtils.showServerAlert("Couldn't subscirbe to topic", primaryStage);
+                        }
                     }
                 }
 
@@ -93,7 +96,7 @@ public class GameListController {
         games.setAll(client.getGameList(true));
     }
 
-    public void joinGame(int gameId){
+    public void joinGame(int gameId) throws IOException{
         client.joinGame(gameId);
 
     }
