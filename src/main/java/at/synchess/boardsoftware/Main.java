@@ -3,6 +3,7 @@ package at.synchess.boardsoftware;
 import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
 import at.synchess.boardsoftware.exceptions.SynChessCoreException;
 import at.synchess.boardsoftware.front.model.AppManager;
+import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -23,7 +24,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        appManager = new AppManager(primaryStage);
-        appManager.showTitleScreen();
+        try {
+            appManager = new AppManager(primaryStage);
+            appManager.showTitleScreen();
+        } catch (SynChessCoreException s){
+            ControllerUtils.showSafeAlert(s.getMessage());
+        }
+
     }
 }

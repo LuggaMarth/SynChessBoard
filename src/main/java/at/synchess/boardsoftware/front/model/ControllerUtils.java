@@ -15,10 +15,24 @@ public class ControllerUtils {
 
         return ret;
     }
+
+    public static void showServerAlert(String message, Stage primStage){
+        Alert a = new Alert(AlertType.ERROR);
+        a.setContentText("Server Error: ");
+        a.initOwner(primStage);
+        a.show();
+    }
+
     public static void showAppManagerAlert(AppManagerException ae, Stage primStage){
         Alert a = new Alert(AlertType.ERROR);
         a.setContentText("Failed building View: " + ae.getController().getSimpleName());
         a.initOwner(primStage);
+        a.show();
+    }
+    public static void showSafeAlert(String message){
+        Alert a = new Alert(AlertType.ERROR);
+        a.setContentText("Error: " + message);
+
         a.show();
     }
 

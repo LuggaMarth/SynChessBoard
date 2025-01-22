@@ -7,35 +7,50 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.synchess.boardsoftware.front.controller.GameController;
+import org.eclipse.paho.client.mqttv3.*;
+
 public class ChessClient {
     private String host;
     private static final int port = 14031;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
+    private MqttClient mqttClient;
+    private String myID;
 
-    public ChessClient(String host) {
+    public ChessClient(String host)  throws IOException,MqttException{
         this.host = host;
-
-
+        myID = "HAHAHA";
         connect();
     }
 
 
 
 
-    public void connect() {
-        try {
+    public void connect() throws IOException, MqttException{
             socket = new Socket(host, port);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected to " + host + ":" + port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+            mqttClient = new MqttClient("tcp://localhost:3110", myID);
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setCleanSession(true);
+            mqttClient.connect(options);
+
+
     }
 
-    public String requestString(String message) {
+    public void subscribeToGame(int gameid, GameController gameController) throws MqttException{
+
+            mqttClient.subscribe("" + gameid, (topic, mqttMessage) -> {
+                gameController.onMessageReceived(mqttMessage.toString());
+            });
+
+    }
+
+    public String requestString(String message) throws IOException {
         if (socket == null || socket.isClosed()) {
             System.out.println("Client is not connected. Please connect first.");
             return null;
@@ -43,16 +58,12 @@ public class ChessClient {
         out.println(message);
         out.flush();
 
-        try {
+
             String response = in.readLine();
             return response;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
-    public List<String> requestList(String message) {
+    public List<String> requestList(String message) throws IOException {
         if (socket == null || socket.isClosed()) {
             System.out.println("Client is not connected. Please connect first.");
             return null;
@@ -61,31 +72,34 @@ public class ChessClient {
         out.println(message);
         out.flush();
 
-        try {
+
             String amount = in.readLine();
             List ret = new ArrayList();
             for (int i = 0; i < Integer.parseInt(amount); i++) {
                 ret.add(in.readLine());
             }
             return ret;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+
+
     }
 
-    public int joinGame(int gameID) {
+    public int joinGame(int gameID) throws IOException{
         String s = requestString("JOIN " + gameID);
         return Integer.parseInt(s);
     }
 
-    public int createGame() {
+    public int createGame() throws IOException {
         String s = requestString("START");
         return Integer.parseInt(s);
     }
 
-    public List<String> getGameList(boolean onlyOpen) {
+    public List<String> getGameList(boolean onlyOpen) throws IOException {
         return requestList("GAMELIST");
+    }
+
+    public void close() throws IOException, MqttException {
+        socket.close();
+        mqttClient.close();
     }
 
 

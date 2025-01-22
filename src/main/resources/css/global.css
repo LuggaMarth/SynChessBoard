@@ -46,3 +46,8 @@
 .btn:hover {
     -fx-background-color: #383d42;
 }
+
+.tile {
+    -fx-pref-height: 100;
+    -fx-pref-width: 100;
+}
