@@ -23,6 +23,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/** CodeScreenView: Players can put in a Gamecode to join a game (or replay one)
+ *
+ */
 public class CodeScreenController {
     private AppManager appManager;
     private Stage primaryStage;
@@ -44,6 +47,13 @@ public class CodeScreenController {
     @FXML
     private Label code;
 
+    /**
+     *  show(): Sets root of scene to the CodeScreenView
+     * @param primaryStage
+     * @param logic AppLogic that evoked this method
+     * @throws IOException If FXML File couldn't be opened
+     */
+
     public static void show(Stage primaryStage, AppManager logic) throws IOException {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(CodeScreenController.class.getResource("/view/codeScreen.fxml"));
@@ -58,7 +68,7 @@ public class CodeScreenController {
         Platform.runLater(() -> primaryStage.setFullScreen(true));
     }
 
-    // setter
+    // setters
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
     }
@@ -66,7 +76,7 @@ public class CodeScreenController {
         this.primaryStage = primaryStage;
     }
 
-    // ***** METHODS for actions
+    //OnClick Methods
     @FXML
     public void OnActionTurnOffButton(ActionEvent event) {
         RaspiManager.shutdownRaspberry();
@@ -96,7 +106,8 @@ public class CodeScreenController {
         enterNumber(Integer.parseInt(b.getText()));
     }
 
-    void enterNumber(int i) {
+
+    private void enterNumber(int i) {
         if (code.getText().length() < 8)
             code.setText(code.getText() + i);
     }

@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * View during game. Displays current time, boardstate and status of the game
+ */
 public class GameController {
 
     private AppManager appManager;
@@ -34,10 +37,13 @@ public class GameController {
     private GridPane chessBoard;
 
 
-    public void setAppManager(AppManager appManager) {
-        this.appManager = appManager;
-    }
-
+    /**
+     *  show(): Sets root of scene to the GameControllerView
+     * @param primaryStage
+     * @param logic AppLogic that evoked this method
+     * @param gameId ID of game being joined
+     * @throws IOException If FXML File couldn't be opened
+     */
     public static void show(Stage primaryStage, AppManager logic, int gameId) throws IOException, MqttException {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(GameController.class.getResource("/view/gameView.fxml"));
@@ -56,6 +62,10 @@ public class GameController {
 
         primaryStage.getScene().setRoot(root);
         primaryStage.show();
+    }
+
+    public void setAppManager(AppManager appManager) {
+        this.appManager = appManager;
     }
 
     @FXML
@@ -81,11 +91,12 @@ public class GameController {
 
     }
 
-    private void setupInitialPieces() {
-        for (int i = 0; i < 8; i++) {
-        }
-    }
 
+    /**
+     * Opened by the ChessClient, whenever a Mqtt-Announcement is received
+     * @param message
+     */
+    //TODO: Implement ChessLibary to read and apply turns
     public void onMessageReceived(String message){
         Platform.runLater(()-> {
             lbStatus.setText("> " + message);
@@ -93,6 +104,11 @@ public class GameController {
 
     }
 
+    /**
+     * Sets the displayed board to the state "values"
+     * IDs of the pieces are notated in the ChessUtils library
+     * @param values
+     */
     private void setBoard(int[][] values) {
 
         while (currPieces.size() != 0) {
@@ -102,8 +118,8 @@ public class GameController {
             for (int x = 0; x < 8; ++x) {
                 if (values[x][y] != 0) {
                     ImageView newPiece = new ImageView(pieceImages[values[x][y] - 1]);
-                    newPiece.setFitHeight(50);
-                    newPiece.setFitWidth(50);
+                    newPiece.setFitHeight(45);
+                    newPiece.setFitWidth(45);
                     currPieces.add(newPiece);
                     chessBoard.add(newPiece, x, y);
                 }

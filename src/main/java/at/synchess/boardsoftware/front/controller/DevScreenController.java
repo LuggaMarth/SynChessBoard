@@ -18,6 +18,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Opens Dev Menu, used for Testing and Debugging
+ */
 public class DevScreenController {
     private AppManager manager;
     private Stage primaryStage;
@@ -40,10 +43,10 @@ public class DevScreenController {
     @FXML private TextField tfStep;
 
     /**
-     * show(): Shows the current scene
-     * @param primaryStage Stage to be shown on
-     * @param logic main logic of the app
-     * @throws IOException if file could not be found
+     *  show(): Currently doesn't do shit
+     * @param primaryStage
+     * @param logic AppLogic that evoked this method
+     * @throws IOException If FXML File couldn't be opened
      */
     public static void show(Stage primaryStage, AppManager logic) throws IOException {
         throw new IOException();
