@@ -10,17 +10,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 
@@ -33,7 +32,7 @@ public class GameListController {
     @FXML private Label ipLbl;
     @FXML private Button developerButton;
     @FXML private Button turnOffButton;
-    @FXML private TilePane tilePane;
+    @FXML private ListView<String> listView;
     @FXML private Button backButton;
     @FXML private VBox lineLogoHolder;
     @FXML private ImageView logoImg;
@@ -74,49 +73,28 @@ public class GameListController {
     public void reloadList(){
         if (games == null) {
             games = FXCollections.observableArrayList();
-        }
+            listView.setItems(games);
 
-        try {
-            games.setAll(client.getGameList(true));
-        } catch (IOException e) {
-            ControllerUtils.showServerAlert("Couldn't request current Games", primaryStage);
-        }
-
-
-            for (String game:
-                 games) {
-                System.out.println(game);
-                Label l = new Label(game);
-                l.getStyleClass().addAll("btn-secondary","btn","btn-menu","tile");
-                l.setAlignment(Pos.CENTER);
-
-                l.setOnMouseClicked(event -> {
-                    if (event.getClickCount() == 1) { // Check for double-click
-                        try{
-                                appManager.showGame(Integer.parseInt(l.getText()));
+            listView.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) { // Check for double-click
+                    String selectedItem = listView.getSelectionModel().getSelectedItem();
+                    if (selectedItem != null) {
+                        try {
+                            appManager.showGame(Integer.parseInt(selectedItem));
                             } catch (AppManagerException e) {
                                 ControllerUtils.showAppManagerAlert(e,primaryStage);
-                            } catch (MqttException e){
-                            ControllerUtils.showServerAlert("Couldn't subscribe to topic", primaryStage);
-                        }
-                        }
+                            }
+                    }
+                }
 
+            });
 
-                });
-
-                tilePane.getChildren().add(l);
-            }
-
-
+        }
+        games.setAll(client.getGameList(true));
     }
 
     public void joinGame(int gameId){
-        try {
-            client.joinGame(gameId);
-        } catch (IOException e){
-            ControllerUtils.showServerAlert("Joining game went wrong", primaryStage);
-        }
-
+        client.joinGame(gameId);
 
     }
 
