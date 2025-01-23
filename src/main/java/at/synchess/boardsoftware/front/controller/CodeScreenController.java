@@ -20,6 +20,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 
@@ -106,7 +107,6 @@ public class CodeScreenController {
         enterNumber(Integer.parseInt(b.getText()));
     }
 
-
     private void enterNumber(int i) {
         if (code.getText().length() < 8)
             code.setText(code.getText() + i);
@@ -120,6 +120,17 @@ public class CodeScreenController {
 
     @FXML
     void sendCode(ActionEvent event) {
+        try {
+            int NumCode = Integer.parseInt(code.getText());
+            if (appManager.getClient().joinGame(NumCode) != 0){
+                appManager.showGame(NumCode);
+            }
+            else ControllerUtils.showWarning("Game not found", primaryStage);
+        } catch (IOException | MqttException e) {
+         ControllerUtils.showServerAlert("Couldn't connect properly", primaryStage);
+        } catch (AppManagerException ae){
+            ControllerUtils.showAppManagerAlert(ae, primaryStage);
+        }
 
     }
 

@@ -36,4 +36,11 @@ public class ControllerUtils {
         a.show();
     }
 
+    public static void showWarning(String message, Stage primStage){
+        Alert a = new Alert(AlertType.WARNING);
+        a.setContentText(message);
+        a.initOwner(primStage);
+        a.show();
+    }
+
 }

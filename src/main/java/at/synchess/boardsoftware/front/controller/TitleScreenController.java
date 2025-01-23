@@ -103,10 +103,10 @@ public class TitleScreenController {
         switchSelection(Selection.JOIN);
     }
     @FXML public void OnHost(ActionEvent event) {}
-    @FXML private void OnEnterCodeJoin(ActionEvent e) {
+    @FXML public void OnEnterCodeJoin(ActionEvent e) {
         loadCodeMenu();
     }
-    @FXML private void OnBrowseGames(ActionEvent e) {
+    @FXML public void OnBrowseGames(ActionEvent e) {
         try {
             appManager.showGameList();
             } catch (AppManagerException appManagerException) {
@@ -114,10 +114,10 @@ public class TitleScreenController {
             }
 
     }
-    @FXML private void OnBrowseReplays(ActionEvent e) {
+    @FXML public void OnBrowseReplays(ActionEvent e) {
 
     }
-    @FXML private void OnEnterCodeHost(ActionEvent e) {
+    @FXML public void OnEnterCodeHost(ActionEvent e) {
 
     }
 
@@ -151,6 +151,7 @@ public class TitleScreenController {
                         (this.getClass().getMethod(buttonConf[index][2], new Class[]{ActionEvent.class})).invoke(this, new ActionEvent());
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                             //Technically can't occur I think?
+                            e.printStackTrace();
                             ControllerUtils.showServerAlert("Code's haunted", primaryStage);
                         }
                     });
