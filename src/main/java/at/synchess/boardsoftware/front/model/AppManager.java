@@ -5,6 +5,7 @@ import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.exceptions.SynChessCoreException;
 import at.synchess.boardsoftware.front.controller.*;
 import javafx.stage.Stage;
+import jssc.SerialPortException;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.io.IOException;
 public class AppManager {
     private final SCDCommandLayer driver;
     private final Stage primaryStage;
-    private ChessClient client;
+    private final ChessClient client;
 
     public AppManager(Stage primaryStage) throws SynChessCoreException {
         this.primaryStage = primaryStage;
@@ -31,7 +32,7 @@ public class AppManager {
            throw new SynChessCoreException("Couldn't connect to client");
         }
 
-        primaryStage.setOnCloseRequest(event ->{
+        primaryStage.setOnCloseRequest(_ ->{
             try {
                 client.close();
             } catch (IOException | MqttException e) {
@@ -58,8 +59,6 @@ public class AppManager {
 
     /**
      * showDeveloperScreen(): Shows the developer Screen
-     *
-     * @throws IOException
      */
     public void showDeveloperScreen() throws AppManagerException {
         try {
@@ -95,6 +94,19 @@ public class AppManager {
             GameController.show(getPrimaryStage(), this, gameId);
         } catch (IOException e) {
             throw new AppManagerException(GameController.class);
+        }
+    }
+
+    /**
+     * closeRoutine(): Gets called once the application is shut down
+     */
+    public void closeRoutine() {
+        // close serial connection
+        try {
+            driver.close();
+        } catch (SerialPortException e) {
+            // TODO: KIKS EXCEPTION
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,13 +1,10 @@
 package at.synchess.boardsoftware;
 
-import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
 import at.synchess.boardsoftware.exceptions.SynChessCoreException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-import java.util.Scanner;
 
 /**
  * Main: Handles the start of the JavaFX - Application.
@@ -30,6 +27,10 @@ public class Main extends Application {
         } catch (SynChessCoreException s){
             ControllerUtils.showSafeAlert(s.getMessage());
         }
+    }
 
+    @Override
+    public void stop() {
+        appManager.closeRoutine();
     }
 }

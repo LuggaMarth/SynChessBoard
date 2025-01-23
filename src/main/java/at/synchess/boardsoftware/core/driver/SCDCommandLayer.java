@@ -1,6 +1,9 @@
 package at.synchess.boardsoftware.core.driver;
 
+import at.synchess.boardsoftware.core.driver.enums.ChessBoardSector;
+import at.synchess.boardsoftware.core.driver.enums.StepDirection;
 import at.synchess.boardsoftware.exceptions.SynChessCoreException;
+import jssc.SerialPortException;
 
 /**
  * SCDCommandLayer(): Abstracts the driver connection layer and calls the commands
@@ -65,11 +68,11 @@ public class SCDCommandLayer {
      * char array.
      * @return field read in chess board
      */
-    public char[] readChessBoard() {
+    public char[] readChessBoard(ChessBoardSector sector) {
         char[] field;
 
         try {
-            field = getCore().readBoard();
+            field = getCore().readBoard(sector);
         } catch (SynChessCoreException e) {
             field = null;
         }
@@ -100,5 +103,12 @@ public class SCDCommandLayer {
         } catch (SynChessCoreException e) {
             System.err.println("Yep, didn't work out pal :c");
         }
+    }
+
+    /**
+     * close(): Closes the driver instance
+     */
+    public void close() throws SerialPortException {
+        core.close();
     }
 }

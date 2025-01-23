@@ -1,5 +1,7 @@
 package at.synchess.boardsoftware.core.driver;
 
+import at.synchess.boardsoftware.core.driver.enums.ChessBoardSector;
+import at.synchess.boardsoftware.core.driver.enums.StepDirection;
 import at.synchess.boardsoftware.exceptions.SynChessCoreException;
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -15,14 +17,20 @@ public class SCDCore {
     public static final int HALF_FIELD_STP = 500;
     public static final int FULL_FIELD_STP = 1000;
 
-    private static final String COMMAND_READ = "R";
     private static final String COMMAND_SYN = "A";
     private static final char COMMAND_ACKNOWLEDGED = 'X';
-    private static final String COMMAND_STEP = "S";
-    private static final String COMMAND_READALL = "B";
-    private static final String COMMAND_HOME = "H";
 
-    private static final int TIMEOUT_READ_ALL = 10000;
+    private static final String COMMAND_READ = "R";
+    private static final String COMMAND_READ_CENTER = "B";
+    private static final String COMMAND_READ_OUT_WHITE = "W";
+    private static final String COMMAND_READ_OUT_BLACK = "O";
+
+    private static final String COMMAND_STEP = "S";
+    private static final String COMMAND_HOME = "H";
+    private static final String COMMAND_MAGNET_ON = "M";
+    private static final String COMMAND_MAGNET_OFF = "N";
+
+    private static final int TIMEOUT_READ_ALL = 15000;
     private static final int TIMEOUT_HOME = 20000;
 
     private static final String ARDUINO_PORT_NAME = "/dev/ttyACM0";
@@ -52,6 +60,7 @@ public class SCDCore {
         }
     }
 
+    // *********************** Scan Board Methods ***********************
     /**
      * readChessField(): Reads the value of a specific chess field.
      *
@@ -70,7 +79,7 @@ public class SCDCore {
         commandToSend += ";";
 
         // send to arduino
-        String retval = executeCommand(commandToSend, TIMEOUT_READ_ALL);
+        String retval = executeCommand(commandToSend, TIMEOUT_READ_ALL, 1);
 
         if(retval == null) {
             throw new SynChessCoreException("Something went wrong executing the command " + commandToSend);
@@ -84,17 +93,32 @@ public class SCDCore {
      *
      * @return chess board
      */
-    public char[] readBoard() throws SynChessCoreException {
-        String board = "";
+    public char[] readBoard(ChessBoardSector section) throws SynChessCoreException {
+        String command;
+        int bytec;
+
+        if(section == ChessBoardSector.OUT_WHITE) {
+            command = COMMAND_READ_OUT_WHITE;
+            bytec = 32;
+        } else if (section == ChessBoardSector.OUT_BLACK) {
+            command = COMMAND_READ_OUT_BLACK;
+            bytec = 32;
+        } else {
+            command = COMMAND_READ_CENTER;
+            bytec = 64;
+        }
 
         // read board from arduino
-        String retval = executeCommand(COMMAND_READALL, TIMEOUT_HOME);
+        String board = executeCommand(command, TIMEOUT_HOME, bytec);
 
-        if(retval == null || retval.length() < CHESS_BOARD_SIZE) throw new SynChessCoreException("Something went wrong executing the command " + COMMAND_READALL);
+        if(board == null || board.length() < CHESS_BOARD_SIZE) throw new SynChessCoreException("Something went wrong executing the command " + COMMAND_READ_CENTER);
 
         return board.toCharArray();
     }
+    // ******************************************************************
 
+
+    // *********************** Move figure methods ***********************
     /**
      * step(): Moves the CoreXY in the desired direction.
      * @param direction In which direction to move
@@ -123,7 +147,7 @@ public class SCDCore {
         System.out.print(commandToSend);
 
         // send to arduino
-        /*String retval = executeCommand(commandToSend, TIMEOUT_READ_ALL);
+        /*String retval = executeCommand(commandToSend, TIMEOUT_READ_ALL, 1);
 
         if((retval != null ? retval.charAt(0) : '_') != COMMAND_ACKNOWLEDGED) {
             throw new SynChessCoreException("Something went wrong executing the command " + commandToSend);
@@ -131,11 +155,26 @@ public class SCDCore {
          */
     }
 
+    public boolean switchMagnet(boolean state) throws SynChessCoreException {
+        String retval;
+
+        if (state) {
+            retval = executeCommand(COMMAND_MAGNET_ON, TIMEOUT_HOME, 1);
+        } else {
+            retval = executeCommand(COMMAND_MAGNET_OFF, TIMEOUT_HOME, 1);
+        }
+
+        return retval.charAt(0) == COMMAND_ACKNOWLEDGED;
+    }
+    // ******************************************************************
+
+
+    // *********************** Utility Commands ***********************
     /**
      * home(): Return CoreXY to (0 0)
      */
     public void home() throws SynChessCoreException {
-        String retval = executeCommand(COMMAND_HOME, TIMEOUT_HOME);
+        String retval = executeCommand(COMMAND_HOME, TIMEOUT_HOME, 1);
 
         if((retval != null ? retval.charAt(0) : '_') != COMMAND_ACKNOWLEDGED) {
             throw new SynChessCoreException("Something went wrong executing the command " + COMMAND_HOME);
@@ -143,11 +182,38 @@ public class SCDCore {
     }
 
     /**
+     * isArduinoAvailable(): Checks, whether the Arduino is available.
+     * @return true or false
+     * @throws SynChessCoreException if stuff goes wrong
+     */
+    public boolean isArduinoAvailable() throws SynChessCoreException {
+        String returnval;
+
+        try {
+            returnval = executeCommand(COMMAND_SYN, TIMEOUT_READ_ALL, 1);
+        } catch (SynChessCoreException e) {
+            throw new SynChessCoreException("Not today, pal :c");
+        }
+
+        return (returnval.charAt(0) == COMMAND_ACKNOWLEDGED);
+    }
+
+    /**
+     * close(): closes the connection to the Arduino
+     * @throws SerialPortException throws stuff
+     */
+    public void close() throws SerialPortException {
+        serialPort.closePort();
+    }
+    // ******************************************************************
+
+    // *********************** Send commands ***********************
+    /**
      * executeRawCommand(): Executes raw commands on the hardware. Use this with caution due to
      * raw command handling!
      * @param command sends the given command directly to the serial port
      */
-    public String executeCommand(String command, int timeout) throws SynChessCoreException {
+    public String executeCommand(String command, int timeout, int answerByteCount) throws SynChessCoreException {
         String returnValue = "";
         String[] commandsToSend;
 
@@ -166,7 +232,7 @@ public class SCDCore {
                     }
 
                     serialPort.writeString(sb.toString());
-                    returnValue = serialPort.readString(1, timeout);
+                    returnValue = serialPort.readString(answerByteCount, timeout);
 
                     if(returnValue.charAt(0) != COMMAND_ACKNOWLEDGED) {
                         throw new SynChessCoreException("Not today, pal :c");
@@ -179,7 +245,7 @@ public class SCDCore {
                 serialPort.writeString(command);
 
                 // await response
-                returnValue = serialPort.readString(1, timeout);
+                returnValue = serialPort.readString(answerByteCount, timeout);
             }
         } catch (SerialPortException | SerialPortTimeoutException e) {
             throw new SynChessCoreException("Not today, pal :c");
@@ -187,30 +253,5 @@ public class SCDCore {
 
         return returnValue;
     }
-
-    public boolean isArduinoAvailable() throws SynChessCoreException {
-        String returnval = "";
-
-        try {
-             returnval = executeCommand(COMMAND_SYN, TIMEOUT_READ_ALL);
-        } catch (SynChessCoreException e) {
-            throw new SynChessCoreException("Not today, pal :c");
-        }
-
-        return (returnval.charAt(0) == COMMAND_ACKNOWLEDGED);
-    }
-
-    /**
-     * finalize(): Destructor of this object
-     *
-     * @throws Throwable throws stuff
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        // close the serial port
-        serialPort.closePort();
-
-        // finish routine
-        super.finalize();
-    }
+    // ******************************************************************
 }
