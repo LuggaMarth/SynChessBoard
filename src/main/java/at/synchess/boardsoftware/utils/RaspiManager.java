@@ -1,4 +1,4 @@
-package at.synchess.boardsoftware.core.utils;
+package at.synchess.boardsoftware.utils;
 
 import java.io.IOException;
 

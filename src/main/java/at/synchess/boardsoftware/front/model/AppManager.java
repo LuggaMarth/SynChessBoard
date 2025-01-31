@@ -1,6 +1,6 @@
 package at.synchess.boardsoftware.front.model;
 
-import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
+import at.synchess.boardsoftware.driver.SCDCommandLayer;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.exceptions.SynChessCoreException;
 import at.synchess.boardsoftware.front.controller.*;
@@ -102,11 +102,10 @@ public class AppManager {
      */
     public void closeRoutine() {
         // close serial connection
-        try {
-            driver.close();
-        } catch (SerialPortException e) {
-            // TODO: KIKS EXCEPTION
-            throw new RuntimeException(e);
-        }
+        //try {
+        //    //driver.close();
+        //} catch (SerialPortException e) {
+        //    ControllerUtils.showSafeAlert("Couldn't finish close routine!");
+        //}
     }
 }

@@ -1,18 +1,17 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.Main;
-import at.synchess.boardsoftware.core.utils.RaspiManager;
+import at.synchess.boardsoftware.utils.RaspiManager;
 import at.synchess.boardsoftware.enums.Selection;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
-import at.synchess.boardsoftware.core.utils.NetworkManager;
+import at.synchess.boardsoftware.utils.NetworkManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;

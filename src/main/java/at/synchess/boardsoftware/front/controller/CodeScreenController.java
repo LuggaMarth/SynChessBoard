@@ -1,8 +1,8 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.Main;
-import at.synchess.boardsoftware.core.utils.NetworkManager;
-import at.synchess.boardsoftware.core.utils.RaspiManager;
+import at.synchess.boardsoftware.utils.NetworkManager;
+import at.synchess.boardsoftware.utils.RaspiManager;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
@@ -17,8 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import org.eclipse.paho.client.mqttv3.MqttException;
 

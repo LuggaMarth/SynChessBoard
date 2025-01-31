@@ -1,6 +1,6 @@
 package at.synchess.boardsoftware.front.controller;
 
-import at.synchess.boardsoftware.core.utils.RaspiManager;
+import at.synchess.boardsoftware.utils.RaspiManager;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ChessClient;
