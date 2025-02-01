@@ -1,21 +1,29 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.front.model.AppManager;
-import at.synchess.utils.ChessUtils;
+
+import at.synchess.boardsoftware.front.model.ChessClient;
+import at.synchess.utils.ChessBoard;
+import at.synchess.utils.ChessNotation;
+import at.synchess.utils.Move;
+import at.synchess.utils.Pieces;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +34,7 @@ public class GameController {
 
     private AppManager appManager;
     private int gameId;
-    private ChessUtils chessUtils;
+    private ChessBoard chessUtils;
 
     Image pieceImages[];
     List<ImageView> currPieces;
@@ -55,8 +63,9 @@ public class GameController {
 
         logic.getClient().subscribeToGame(gameId, controller);
 
-        controller.chessUtils = new ChessUtils(false);
+        controller.chessUtils = new ChessBoard(false);
         controller.setBoard(controller.chessUtils.board);
+
         controller.gameId = gameId;
         controller.lbStatus.setText("Current Game: " + gameId);
 
@@ -92,6 +101,12 @@ public class GameController {
     }
 
 
+    @FXML
+    void sendClicked(ActionEvent event) {
+
+    }
+
+
     /**
      * Opened by the ChessClient, whenever a Mqtt-Announcement is received
      * @param message
@@ -99,10 +114,68 @@ public class GameController {
     //TODO: Implement ChessLibary to read and apply turns
     public void onMessageReceived(String message){
         Platform.runLater(()-> {
-            lbStatus.setText("> " + message);
+            String data[] = message.split(" ");
+            Move m = ChessNotation.parseAnnotation(data[0]);
+            //TODO: chessUtils.applyMove(m);
+            displayMove(m);
         });
 
     }
+
+
+    private void displayMove(Move m){
+        washBoard();
+        switch (m.getMoveType()){
+            case STANDARD:
+            case PROMOTION:
+                setPiece(m.getPiece(), m.getTargX(),m.getTargY());
+                clearTile(m.getStartX(),m.getStartY());
+                markTile(m.getTargX(),m.getTargY());
+                markTile(m.getStartX(),m.getStartY());
+                break;
+            case CASTLE:
+
+                switch (m.getCastleType()){
+                    case 0:
+                        clearTile(0,4);
+                        clearTile(0,5);
+                        clearTile(0,6);
+                        clearTile(0,7);
+                        setPiece(Pieces.bROOK,0,5);
+                        setPiece(Pieces.bKING,0,6);
+
+                        break;
+                    case 1:
+                        clearTile(0,0);
+                        clearTile(0,1);
+                        clearTile(0,2);
+                        clearTile(0,3);
+                        clearTile(0,4);
+                        setPiece(Pieces.bKING,0,1);
+                        setPiece(Pieces.bROOK,0,2);
+                        break;
+                    case 2:
+                        clearTile(7,0);
+                        clearTile(7,1);
+                        clearTile(7,2);
+                        clearTile(7,3);
+                        setPiece(Pieces.wKING,7,1);
+                        setPiece(Pieces.wROOK,7,2);
+                        break;
+                    case 3:
+                        clearTile(7,3);
+                        clearTile(7,4);
+                        clearTile(7,5);
+                        clearTile(7,6);
+                        clearTile(7,7);
+                        setPiece(Pieces.wROOK,7,5);
+                        setPiece(Pieces.wKING,7,6);
+                        break;
+                }
+        }
+
+    }
+
 
     /**
      * Sets the displayed board to the state "values"
@@ -110,6 +183,7 @@ public class GameController {
      * @param values
      */
     private void setBoard(int[][] values) {
+
 
         while (currPieces.size() != 0) {
             chessBoard.getChildren().remove(currPieces.get(0));
@@ -123,6 +197,38 @@ public class GameController {
                     currPieces.add(newPiece);
                     chessBoard.add(newPiece, x, y);
                 }
+            }
+        }
+    }
+
+    private void setPiece(int piece, int x, int y){
+        ImageView newPiece = new ImageView(pieceImages[piece]);
+        newPiece.setFitHeight(45);
+        newPiece.setFitWidth(45);
+        currPieces.add(newPiece);
+        chessBoard.add(newPiece, x, y);
+    }
+
+    private void clearTile(int x, int y){
+        chessBoard.getChildren().removeIf(node -> {
+            if ( GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x)
+               return node instanceof ImageView;
+           else return false;
+        });
+    }
+
+    private void markTile(int x, int y){
+       for(Node node : chessBoard.getChildren()){
+           if (node instanceof Rectangle && GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x){
+               ((Rectangle) node).setFill(Color.YELLOW);
+           }
+       }
+    }
+
+    private void washBoard(){
+        for (Node node : chessBoard.getChildren()){
+            if (node instanceof Rectangle){
+                ((Rectangle) node).setFill(((GridPane.getRowIndex(node) + GridPane.getColumnIndex(node)) % 2 == 0) ? Color.BEIGE : Color.OLIVE);
             }
         }
     }

@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /** CodeScreenView: Players can put in a Gamecode to join a game (or replay one)
  *
@@ -120,6 +121,7 @@ public class CodeScreenController {
     void sendCode(ActionEvent event) {
         try {
             int NumCode = Integer.parseInt(code.getText());
+
             if (appManager.getClient().joinGame(NumCode) != 0){
                 appManager.showGame(NumCode);
             }

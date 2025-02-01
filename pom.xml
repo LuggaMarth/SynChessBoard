@@ -87,10 +87,10 @@
 
         <dependency>
             <groupId>at.synchess</groupId>
-            <artifactId>ChessUtils</artifactId>
+            <artifactId>ChessBoard</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/ChessUtils.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/lib/ChessBoard.jar</systemPath>
         </dependency>
 
             <dependency>

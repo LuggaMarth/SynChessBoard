@@ -14,15 +14,15 @@
    <children>
       <GridPane fx:id="chessBoard" hgap="0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="360.0" prefWidth="360.0" style="-fx-background-color: #f0d9b5;" vgap="0">
          <children>
-            <Rectangle fill="#eeeed2" height="45" width="45" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="1" />
-            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="2" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="3" />
-            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="4" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="5" />
-            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="6" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="7" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.rowIndex="1" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="0" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="1" />
@@ -30,7 +30,7 @@
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="1" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="1" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.rowIndex="2" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="2" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="2" />
@@ -38,7 +38,7 @@
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="2" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="2" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.rowIndex="3" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="3" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="3" />
@@ -46,7 +46,7 @@
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="3" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="3" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.rowIndex="4" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="4" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="4" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="4" />
@@ -54,7 +54,7 @@
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="4" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="4" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.rowIndex="5" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="5" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="5" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="5" />
@@ -62,7 +62,7 @@
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="5" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="5" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.rowIndex="6" />
+            <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="6" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="6" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="6" />
@@ -70,7 +70,7 @@
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="5" GridPane.rowIndex="6" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="6" GridPane.rowIndex="6" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="7" GridPane.rowIndex="6" />
-            <Rectangle fill="#769656" height="45" width="45" GridPane.rowIndex="7" />
+            <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="0" GridPane.rowIndex="7" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <Rectangle fill="#769656" height="45" width="45" GridPane.columnIndex="2" GridPane.rowIndex="7" />
             <Rectangle fill="#eeeed2" height="45" width="45" GridPane.columnIndex="3" GridPane.rowIndex="7" />
@@ -103,7 +103,7 @@
       <VBox prefHeight="356.0" prefWidth="193.0">
          <children>
             <Label fx:id="labelTimer" text="80:00" />
-            <Button fx:id="btnSend" mnemonicParsing="false" text="Senden" />
+            <Button fx:id="btnSend" mnemonicParsing="false" onAction="#sendClicked" text="Senden" />
             <Label fx:id="lbStatus" text="Dein Zug" />
          </children>
       </VBox>

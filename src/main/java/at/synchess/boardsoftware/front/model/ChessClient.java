@@ -86,7 +86,14 @@ public class ChessClient {
 
     public int joinGame(int gameID) throws IOException{
         String s = requestString("JOIN " + gameID);
+        System.out.println(s);
         return Integer.parseInt(s);
+    }
+
+    public void postMove(int gameID, String move, int secsRemaining) throws MqttException {
+        MqttMessage mm = new MqttMessage((move + " " + secsRemaining).getBytes());
+        mm.setQos(2); // QoS level 2
+        mqttClient.publish(gameID + "", mm);
     }
 
     public int createGame() throws IOException {

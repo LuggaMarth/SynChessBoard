@@ -3,14 +3,14 @@ package at.synchess.boardsoftware.front.model;
 
 import at.synchess.utils.*;
 public class GameMaster {
-   ChessUtils chessUtils;
+   ChessBoard chessUtils;
    int gameId;
 
    public void joinGame(int GameID){
-   chessUtils = new ChessUtils(false);
+   chessUtils = new ChessBoard(false);
    }
    public void createGame(){
-   chessUtils = new ChessUtils(false);
+   chessUtils = new ChessBoard(false);
 
    }
 
