@@ -1,7 +1,6 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.front.model.AppManager;
-import at.synchess.utils.ChessBoard;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
