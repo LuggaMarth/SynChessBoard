@@ -32,7 +32,7 @@ public class AppManager {
            throw new SynChessCoreException("Couldn't connect to client");
         }
 
-        primaryStage.setOnCloseRequest(_ ->{
+        primaryStage.setOnCloseRequest(event ->{
             try {
                 client.close();
             } catch (IOException | MqttException e) {
@@ -94,6 +94,15 @@ public class AppManager {
             GameController.show(getPrimaryStage(), this, gameId);
         } catch (IOException e) {
             throw new AppManagerException(GameController.class);
+        }
+    }
+
+
+    public void showHostScreen() throws AppManagerException {
+        try {
+            HostController.show(getPrimaryStage(), this);
+        } catch (IOException e) {
+            throw new AppManagerException(HostController.class);
         }
     }
 

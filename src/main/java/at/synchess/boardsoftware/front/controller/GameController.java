@@ -73,6 +73,7 @@ public class GameController {
         primaryStage.show();
     }
 
+
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
     }
@@ -85,11 +86,12 @@ public class GameController {
         // Initialize the chess pieces on the board
         pieceImages = new Image[]{
                 new Image(getClass().getResource("/images/pieces/white_Pawn.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_Pawn.png").toString()),
                 new Image(getClass().getResource("/images/pieces/black_Pawn.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_Rook.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_Rook.png").toString()),
                 new Image(getClass().getResource("/images/pieces/white_Knight.png").toString()),
                 new Image(getClass().getResource("/images/pieces/black_Knight.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_Rook.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_Rook.png").toString()),
                 new Image(getClass().getResource("/images/pieces/white_Bishop.png").toString()),
                 new Image(getClass().getResource("/images/pieces/black_Bishop.png").toString()),
                 new Image(getClass().getResource("/images/pieces/white_Queen.png").toString()),
@@ -111,12 +113,11 @@ public class GameController {
      * Opened by the ChessClient, whenever a Mqtt-Announcement is received
      * @param message
      */
-    //TODO: Implement ChessLibary to read and apply turns
     public void onMessageReceived(String message){
         Platform.runLater(()-> {
             String data[] = message.split(" ");
             Move m = ChessNotation.parseAnnotation(data[0]);
-            //TODO: chessUtils.applyMove(m);
+            chessUtils.applyMove(m);
             displayMove(m);
         });
 
@@ -128,48 +129,48 @@ public class GameController {
         switch (m.getMoveType()){
             case STANDARD:
             case PROMOTION:
-                setPiece(m.getPiece(), m.getTargX(),m.getTargY());
-                clearTile(m.getStartX(),m.getStartY());
-                markTile(m.getTargX(),m.getTargY());
-                markTile(m.getStartX(),m.getStartY());
+                setPiece(m.getPiece(), m.getTargY(),m.getTargX());
+                clearTile(m.getStartY(),m.getStartX());
+                markTile(m.getTargY(),m.getTargX());
+                markTile(m.getStartY(),m.getStartX());
                 break;
             case CASTLE:
 
                 switch (m.getCastleType()){
                     case 0:
-                        clearTile(0,4);
-                        clearTile(0,5);
-                        clearTile(0,6);
-                        clearTile(0,7);
-                        setPiece(Pieces.bROOK,0,5);
-                        setPiece(Pieces.bKING,0,6);
+                        clearTile(4,0);
+                        clearTile(5,0);
+                        clearTile(6,0);
+                        clearTile(7,0);
+                        setPiece(Pieces.bROOK,5,0);
+                        setPiece(Pieces.bKING,6,0);
 
                         break;
                     case 1:
                         clearTile(0,0);
-                        clearTile(0,1);
-                        clearTile(0,2);
-                        clearTile(0,3);
-                        clearTile(0,4);
-                        setPiece(Pieces.bKING,0,1);
-                        setPiece(Pieces.bROOK,0,2);
+                        clearTile(1,0);
+                        clearTile(2,0);
+                        clearTile(3,0);
+                        clearTile(4,0);
+                        setPiece(Pieces.bKING,1,0);
+                        setPiece(Pieces.bROOK,2,0);
                         break;
                     case 2:
-                        clearTile(7,0);
-                        clearTile(7,1);
-                        clearTile(7,2);
-                        clearTile(7,3);
-                        setPiece(Pieces.wKING,7,1);
-                        setPiece(Pieces.wROOK,7,2);
+                        clearTile(0,7);
+                        clearTile(1,7);
+                        clearTile(2,7);
+                        clearTile(3,7);
+                        setPiece(Pieces.wKING,1,7);
+                        setPiece(Pieces.wROOK,2,7);
                         break;
                     case 3:
-                        clearTile(7,3);
-                        clearTile(7,4);
-                        clearTile(7,5);
-                        clearTile(7,6);
+                        clearTile(3,7);
+                        clearTile(4,7);
+                        clearTile(5,7);
+                        clearTile(6,7);
                         clearTile(7,7);
-                        setPiece(Pieces.wROOK,7,5);
-                        setPiece(Pieces.wKING,7,6);
+                        setPiece(Pieces.wROOK,5,7);
+                        setPiece(Pieces.wKING,6,7);
                         break;
                 }
         }
@@ -191,17 +192,15 @@ public class GameController {
         for (int y = 0; y < 8; ++y) {
             for (int x = 0; x < 8; ++x) {
                 if (values[x][y] != 0) {
-                    ImageView newPiece = new ImageView(pieceImages[values[x][y] - 1]);
-                    newPiece.setFitHeight(45);
-                    newPiece.setFitWidth(45);
-                    currPieces.add(newPiece);
-                    chessBoard.add(newPiece, x, y);
+                    setPiece(values[x][y], x, y);
+
                 }
+
             }
         }
     }
 
-    private void setPiece(int piece, int x, int y){
+    private void setPiece(int piece, int y, int x){
         ImageView newPiece = new ImageView(pieceImages[piece]);
         newPiece.setFitHeight(45);
         newPiece.setFitWidth(45);
@@ -209,7 +208,7 @@ public class GameController {
         chessBoard.add(newPiece, x, y);
     }
 
-    private void clearTile(int x, int y){
+    private void clearTile(int y, int x){
         chessBoard.getChildren().removeIf(node -> {
             if ( GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x)
                return node instanceof ImageView;
@@ -217,7 +216,7 @@ public class GameController {
         });
     }
 
-    private void markTile(int x, int y){
+    private void markTile(int y, int x){
        for(Node node : chessBoard.getChildren()){
            if (node instanceof Rectangle && GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x){
                ((Rectangle) node).setFill(Color.YELLOW);

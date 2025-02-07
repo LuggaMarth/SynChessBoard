@@ -101,7 +101,7 @@ public class TitleScreenController {
     @FXML public void OnJoin(ActionEvent event) {
         switchSelection(Selection.JOIN);
     }
-    @FXML public void OnHost(ActionEvent event) {}
+    @FXML public void OnHost(ActionEvent event) {loadHostMenu();}
     @FXML public void OnEnterCodeJoin(ActionEvent e) {
         loadCodeMenu();
     }
@@ -169,6 +169,14 @@ public class TitleScreenController {
     private void loadCodeMenu(){
         try {
             appManager.showCodeScreen();
+        } catch (AppManagerException appManagerException) {
+            ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
+        }
+    }
+
+    private void loadHostMenu(){
+        try {
+            appManager.showHostScreen();
         } catch (AppManagerException appManagerException) {
             ControllerUtils.showAppManagerAlert(appManagerException,primaryStage);
         }
