@@ -1,6 +1,6 @@
 package at.synchess.boardsoftware;
 
-import at.synchess.boardsoftware.exceptions.SynChessCoreException;
+import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.application.Application;
@@ -24,7 +24,7 @@ public class Main extends Application {
         try {
             appManager = new AppManager(primaryStage);
             appManager.showTitleScreen();
-        } catch (SynChessCoreException s){
+        } catch (CCLException s){
             ControllerUtils.showSafeAlert(s.getMessage());
         }
     }

@@ -1,8 +1,10 @@
 package at.synchess.boardsoftware.front.model;
 
-import at.synchess.boardsoftware.driver.SCDCommandLayer;
+import at.synchess.boardsoftware.driver.CCLAbstracter;
+import at.synchess.boardsoftware.driver.SynChessDriver;
+import at.synchess.boardsoftware.driver.connection.SerialDriverConnector;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
-import at.synchess.boardsoftware.exceptions.SynChessCoreException;
+import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.controller.*;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
@@ -17,19 +19,23 @@ import java.io.IOException;
  * @author Kilian Nussbaumer
  */
 public class AppManager {
-    private final SCDCommandLayer driver;
+    private final SynChessDriver driver;
     private final Stage primaryStage;
     private final ChessClient client;
 
-    public AppManager(Stage primaryStage) throws SynChessCoreException {
+    public AppManager(Stage primaryStage) throws CCLException {
         this.primaryStage = primaryStage;
 
+        CCLAbstracter cclAbstracter = new CCLAbstracter(new SerialDriverConnector());
+        driver = new SynChessDriver(cclAbstracter);
 
-        driver = new SCDCommandLayer();
+        // initial go home
+        driver.home();
+
         try {
             client = new ChessClient("LocalHost");
         } catch (IOException | MqttException e){
-           throw new SynChessCoreException("Couldn't connect to client");
+           throw new CCLException("Couldn't connect to client");
         }
 
         primaryStage.setOnCloseRequest(event ->{
@@ -110,11 +116,10 @@ public class AppManager {
      * closeRoutine(): Gets called once the application is shut down
      */
     public void closeRoutine() {
-        // close serial connection
-        //try {
-        //    //driver.close();
-        //} catch (SerialPortException e) {
-        //    ControllerUtils.showSafeAlert("Couldn't finish close routine!");
-        //}
+        try {
+            driver.closeRoutine();
+        } catch (SerialPortException e) {
+            ControllerUtils.showSafeAlert("Couldn't finish close routine!");
+        }
     }
 }
