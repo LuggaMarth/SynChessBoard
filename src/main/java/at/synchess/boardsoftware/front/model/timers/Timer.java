@@ -9,9 +9,9 @@ import javafx.util.Duration;
 import java.util.concurrent.Callable;
 
 public abstract class Timer {
-    private IntegerProperty secondsLeft = new SimpleIntegerProperty();
+    private final IntegerProperty secondsLeft = new SimpleIntegerProperty();
     private Callable onTimeout;
-    private Timeline tl;
+    private final Timeline tl;
 
     public Timer(int startingSecs, Callable onTimeout){
         secondsLeft.setValue(startingSecs);
@@ -29,8 +29,8 @@ public abstract class Timer {
     }
 
     public int startTicking(
-            Timeline
-    )
+            Timeline t
+    ){return 0;}
 
     public void setOnTimeout(Callable c){
         onTimeout = c;

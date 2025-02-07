@@ -87,4 +87,8 @@ public class SynChessDriver {
     public void closeRoutine() throws SerialPortException {
         abstracter.getDriverConnection().close();
     }
+
+    public CCLAbstracter getAbstracter() {
+        return abstracter;
+    }
 }

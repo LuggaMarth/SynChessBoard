@@ -2,7 +2,6 @@ package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.front.model.AppManager;
 
-import at.synchess.boardsoftware.front.model.ChessClient;
 import at.synchess.utils.ChessBoard;
 import at.synchess.utils.ChessNotation;
 import at.synchess.utils.Move;
@@ -13,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -36,7 +34,7 @@ public class GameController {
     private int gameId;
     private ChessBoard chessUtils;
 
-    Image pieceImages[];
+    Image[] pieceImages;
     List<ImageView> currPieces;
 
     @FXML
@@ -47,7 +45,7 @@ public class GameController {
 
     /**
      *  show(): Sets root of scene to the GameControllerView
-     * @param primaryStage
+     * @param primaryStage Primary Stage
      * @param logic AppLogic that evoked this method
      * @param gameId ID of game being joined
      * @throws IOException If FXML File couldn't be opened
@@ -111,11 +109,11 @@ public class GameController {
 
     /**
      * Opened by the ChessClient, whenever a Mqtt-Announcement is received
-     * @param message
+     * @param message Message
      */
     public void onMessageReceived(String message){
         Platform.runLater(()-> {
-            String data[] = message.split(" ");
+            String[] data = message.split(" ");
             Move m = ChessNotation.parseAnnotation(data[0]);
             chessUtils.applyMove(m);
             displayMove(m);
@@ -181,13 +179,13 @@ public class GameController {
     /**
      * Sets the displayed board to the state "values"
      * IDs of the pieces are notated in the ChessUtils library
-     * @param values
+     * @param values Values
      */
     private void setBoard(int[][] values) {
 
 
-        while (currPieces.size() != 0) {
-            chessBoard.getChildren().remove(currPieces.get(0));
+        while (!currPieces.isEmpty()) {
+            chessBoard.getChildren().remove(currPieces.getFirst());
         }
         for (int y = 0; y < 8; ++y) {
             for (int x = 0; x < 8; ++x) {
@@ -227,7 +225,7 @@ public class GameController {
     private void washBoard(){
         for (Node node : chessBoard.getChildren()){
             if (node instanceof Rectangle){
-                ((Rectangle) node).setFill(((GridPane.getRowIndex(node) + GridPane.getColumnIndex(node)) % 2 == 0) ? Color.BEIGE : Color.OLIVE);
+                ((Rectangle) node).setFill(((GridPane.getRowIndex(node) + GridPane.getColumnIndex(node)) % 2 == 0) ? Color.BEIGE : Color.MIDNIGHTBLUE);
             }
         }
     }
