@@ -96,9 +96,9 @@ public class ChessClient {
         mqttClient.publish(gameID + "", mm);
     }
 
-    public int createGame() throws IOException {
-        String s = requestString("START");
-        return Integer.parseInt(s);
+    public String createGame(String timerType, int minutes, int seconds) throws IOException {
+        String s = requestString("START " + timerType.toUpperCase() + " " + minutes + " " + seconds);
+        return s;
     }
 
     public List<String> getGameList(boolean onlyOpen) throws IOException {

@@ -1,6 +1,11 @@
 package at.synchess.boardsoftware.front.model;
 
+import at.synchess.boardsoftware.driver.SynChessDriver;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
+import at.synchess.boardsoftware.exceptions.CCLException;
+import at.synchess.utils.ChessBoard;
+import at.synchess.utils.Move;
+import at.synchess.utils.Pieces;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -41,6 +46,28 @@ public class ControllerUtils {
         a.setContentText(message);
         a.initOwner(primStage);
         a.show();
+    }
+
+    public static void commitMove(Move m, ChessBoard cb, SynChessDriver driver) throws CCLException {
+        switch (m.getMoveType()){
+            case STANDARD:
+                if (cb.board[m.getTargX()][m.getTargY()] != Pieces.NONE){
+
+                    driver.removeFigure(m.getTargX(), m.getTargY());
+                }
+
+                driver.moveFigure(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
+            break;
+            case CASTLE:
+                switch (m.getCastleType()){
+                  //TODO: später-ich-problem
+                }
+            break;
+            case PROMOTION:
+                driver.moveFigure(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
+                driver.removeFigure(m.getTargX(),m.getTargY());
+                driver.addFigure(m.getTargX(),m.getTargY(), m.getPiece());
+        }
     }
 
 }

@@ -91,4 +91,12 @@ public class SynChessDriver {
     public CCLAbstracter getAbstracter() {
         return abstracter;
     }
+
+    public void removeFigure(int targX, int targY) {
+        //TODO: puts figure to the side
+    }
+
+    public void addFigure(int targX, int targY, int piece) {
+        //TODO: Adds figure
+    }
 }

@@ -159,6 +159,7 @@ public class TitleScreenController {
                 (this.getClass().getMethod(buttonConf[index][3],new Class[]{ActionEvent.class})).invoke(this, new ActionEvent());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
                 //Technically can't occur I think?
+                e.printStackTrace();
                 ControllerUtils.showServerAlert("Code's haunted", primaryStage);
             }
         });

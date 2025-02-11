@@ -6,20 +6,24 @@ import at.synchess.utils.ChessBoard;
 import at.synchess.utils.ChessNotation;
 import at.synchess.utils.Move;
 import at.synchess.utils.Pieces;
+import at.synchess.utils.timers.FixedTimer;
+import at.synchess.utils.timers.Timer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.paint.Color;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.scene.Node;
 import org.eclipse.paho.client.mqttv3.MqttException;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,12 +37,22 @@ public class GameController {
     private AppManager appManager;
     private int gameId;
     private ChessBoard chessUtils;
+    private Timer timer;
 
     Image[] pieceImages;
     List<ImageView> currPieces;
 
+
+    @FXML
+    private Label labelTimer;
+
+    @FXML
+    private Button btnSend;
+
     @FXML
     private Label lbStatus;
+
+
     @FXML
     private GridPane chessBoard;
 
@@ -67,6 +81,13 @@ public class GameController {
         controller.gameId = gameId;
         controller.lbStatus.setText("Current Game: " + gameId);
 
+        controller.timer = new FixedTimer(300, () -> {
+            controller.onTimeout();
+            return null;
+        });
+        controller.labelTimer.textProperty().bind(controller.timer.getSecondsLeft().asString());
+        controller.timer.startTicking(120);
+
         primaryStage.getScene().setRoot(root);
         primaryStage.show();
     }
@@ -74,6 +95,11 @@ public class GameController {
 
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
+    }
+
+    @FXML
+    void sendClicked(ActionEvent event) {
+        System.out.println("A");
     }
 
     @FXML
@@ -101,11 +127,6 @@ public class GameController {
     }
 
 
-    @FXML
-    void sendClicked(ActionEvent event) {
-
-    }
-
 
     /**
      * Opened by the ChessClient, whenever a Mqtt-Announcement is received
@@ -118,6 +139,10 @@ public class GameController {
             chessUtils.applyMove(m);
             displayMove(m);
         });
+
+    }
+
+    public void onTimeout(){
 
     }
 

@@ -1,6 +1,7 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.front.model.AppManager;
+import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -81,6 +82,13 @@ public class HostController {
 
     @FXML
     void onSubmit(ActionEvent event) {
+        try {
+
+            appManager.getClient().createGame(dropDownTimer.getValue(), spinnerMinutes.getValue(), spinnerSeconds.getValue() == null ? 0 : spinnerSeconds.getValue());
+
+        } catch (IOException ioe){
+            ControllerUtils.showServerAlert("Couldn't create Room", appManager.getPrimaryStage());
+        }
 
     }
 
