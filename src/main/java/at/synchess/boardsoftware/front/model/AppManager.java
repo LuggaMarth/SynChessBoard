@@ -26,11 +26,8 @@ public class AppManager {
     public AppManager(Stage primaryStage) throws CCLException {
         this.primaryStage = primaryStage;
 
-        CCLAbstracter cclAbstracter = new CCLAbstracter(new SerialDriverConnector());
-        driver = new SynChessDriver(cclAbstracter);
-
-        // initial go home
-        driver.home();
+        CCLAbstracter cclAbstracter = new CCLAbstracter();
+        driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
 
         try {
             client = new ChessClient("LocalHost");
@@ -41,7 +38,8 @@ public class AppManager {
         primaryStage.setOnCloseRequest(event ->{
             try {
                 client.close();
-            } catch (IOException | MqttException e) {
+                driver.closeRoutine();
+            } catch (IOException | MqttException | SerialPortException e) {
                 ControllerUtils.showSafeAlert("Couldn't close properly");
             }
         });
@@ -110,17 +108,6 @@ public class AppManager {
             HostController.show(getPrimaryStage(), this);
         } catch (IOException e) {
             throw new AppManagerException(HostController.class);
-        }
-    }
-
-    /**
-     * closeRoutine(): Gets called once the application is shut down
-     */
-    public void closeRoutine() {
-        try {
-            driver.closeRoutine();
-        } catch (SerialPortException e) {
-            ControllerUtils.showSafeAlert("Couldn't finish close routine!");
         }
     }
 }

@@ -2,10 +2,9 @@ package at.synchess.boardsoftware.driver.connection;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
-import jssc.SerialPortTimeoutException;
 
 public class SerialDriverConnector implements IDriverConnection {
-    private static final String ARDUINO_PORT_NAME = "/dev/ttyACM0";
+    private static final String ARDUINO_PORT_NAME = "/dev/ttyUSB0";
     private SerialPort serialPort;
 
     public SerialDriverConnector() {
@@ -31,6 +30,8 @@ public class SerialDriverConnector implements IDriverConnection {
                 SerialPort.STOPBITS_1,
                 SerialPort.PARITY_NONE
         );
+
+        flushSerialPort();
     }
 
     /**
@@ -53,7 +54,19 @@ public class SerialDriverConnector implements IDriverConnection {
     }
 
     @Override
-    public String read(int bytecount, int timeout) throws SerialPortTimeoutException, SerialPortException {
-        return serialPort.readString(bytecount, timeout);
+    public String readString() throws SerialPortException {
+        return serialPort.readString();
     }
+
+    @Override
+    public void flushSerialPort() {
+        try {
+            while (serialPort.getInputBufferBytesCount() > 0) {
+                serialPort.readBytes(serialPort.getInputBufferBytesCount());
+            }
+        } catch (SerialPortException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import at.synchess.boardsoftware.front.controller.GameController;
@@ -23,12 +22,9 @@ public class ChessClient {
 
     public ChessClient(String host)  throws IOException,MqttException{
         this.host = host;
-        myID = "HAHAHA";
+        myID = "ChessBoard-Software-000000";
         connect();
     }
-
-
-
 
     public void connect() throws IOException, MqttException{
             socket = new Socket(host, port);
