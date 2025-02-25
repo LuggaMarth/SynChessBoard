@@ -123,7 +123,7 @@ public class CodeScreenController {
             int NumCode = Integer.parseInt(code.getText());
 
             if (appManager.getClient().joinGame(NumCode) != 0){
-                appManager.showGame(NumCode);
+                appManager.showGame(NumCode, false);
             }
             else ControllerUtils.showWarning("Game not found", primaryStage);
         } catch (IOException | MqttException e) {

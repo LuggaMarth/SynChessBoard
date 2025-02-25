@@ -1,7 +1,12 @@
 package at.synchess.boardsoftware.front.controller;
 
+import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
+import at.synchess.utils.timers.BronsteinTimer;
+import at.synchess.utils.timers.FischerTimer;
+import at.synchess.utils.timers.FixedTimer;
+import at.synchess.utils.timers.SanddialTimer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,10 +21,14 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HostController {
 
+
+    private Class<?>[] timerClasses;
     private AppManager appManager;
     @FXML private Label ipLbl;
     @FXML private VBox lineLogoHolder;
@@ -52,6 +61,7 @@ public class HostController {
         HostController controller = loader.getController();
         controller.setAppManager(logic);
 
+        controller.timerClasses = new Class<?>[]{FixedTimer.class, FischerTimer.class, BronsteinTimer.class, SanddialTimer.class};
         controller.dropDownTimer.getItems().addAll("Fixed","Fischer","Bronstein","Sanduhr");
         controller.dropDownTimer.setValue("Fixed");
         SpinnerValueFactory<Integer> seconds = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
@@ -84,10 +94,15 @@ public class HostController {
     void onSubmit(ActionEvent event) {
         try {
 
-            appManager.getClient().createGame(dropDownTimer.getValue(), spinnerMinutes.getValue(), spinnerSeconds.getValue() == null ? 0 : spinnerSeconds.getValue());
+            int id = appManager.getClient().createGame(dropDownTimer.getValue(), spinnerMinutes.getValue(), spinnerSeconds.getValue() == null ? 0 : spinnerSeconds.getValue());
+            appManager.showGame(id, true);
 
         } catch (IOException ioe){
             ControllerUtils.showServerAlert("Couldn't create Room", appManager.getPrimaryStage());
+        } catch (AppManagerException e) {
+            ControllerUtils.showAppManagerAlert(e,appManager.getPrimaryStage());
+        } catch (MqttException e) {
+            ControllerUtils.showServerAlert("Couldn't sub to room", appManager.getPrimaryStage());
         }
 
     }

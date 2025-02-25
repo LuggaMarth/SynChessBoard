@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import at.synchess.boardsoftware.front.controller.GameController;
+import at.synchess.utils.timers.*;
 import org.eclipse.paho.client.mqttv3.*;
 
 public class ChessClient {
@@ -49,6 +50,11 @@ public class ChessClient {
                 gameController.onMessageReceived(mqttMessage.toString());
             });
 
+    }
+
+    public void post(int gameid, String message) throws MqttException {
+        MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+        mqttClient.publish(gameid + "", mqttMessage);
     }
 
     public String requestString(String message) throws IOException {
@@ -96,9 +102,26 @@ public class ChessClient {
         mqttClient.publish(gameID + "", mm);
     }
 
-    public String createGame(String timerType, int minutes, int seconds) throws IOException {
+    public int createGame(String timerType, int minutes, int seconds) throws IOException {
         String s = requestString("START " + timerType.toUpperCase() + " " + minutes + " " + seconds);
-        return s;
+        return Integer.parseInt(s);
+    }
+
+    public Timer getTimer(int gameID) throws IOException {
+        Timer t;
+        String[] data = requestString("GETTIMER " + gameID).split(" ");
+        switch (data[0]){
+            case "Fixed":
+                return new FixedTimer(Integer.parseInt(data[1]));
+            case "Fischer":
+                return new FischerTimer(Integer.parseInt(data[1]),Integer.parseInt(data[2]));
+            case "Bronstein":
+                return new BronsteinTimer(Integer.parseInt(data[1]),Integer.parseInt(data[2]));
+            case "Sanddial":
+                return new SanddialTimer(Integer.parseInt(data[1]));
+
+        }
+        return null;
     }
 
     public List<String> getGameList(boolean onlyOpen) throws IOException {

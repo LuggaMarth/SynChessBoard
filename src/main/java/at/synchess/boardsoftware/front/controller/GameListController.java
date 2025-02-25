@@ -93,7 +93,7 @@ public class GameListController {
             l.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1) { // Check for double-click
                     try{
-                        appManager.showGame(Integer.parseInt(l.getText()));
+                        appManager.showGame(Integer.parseInt(l.getText()),false);
                     } catch (AppManagerException e) {
                         ControllerUtils.showAppManagerAlert(e,primaryStage);
                     } catch (MqttException e){

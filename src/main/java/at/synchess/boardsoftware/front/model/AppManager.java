@@ -95,9 +95,10 @@ public class AppManager {
 
     }
 
-    public void showGame(int gameId) throws AppManagerException, MqttException {
+    public void showGame(int gameId, boolean isCreator) throws AppManagerException, MqttException {
         try {
-            GameController.show(getPrimaryStage(), this, gameId);
+
+            GameController.show(getPrimaryStage(), this, gameId,driver, isCreator, client.getTimer(gameId));
         } catch (IOException e) {
             throw new AppManagerException(GameController.class);
         }

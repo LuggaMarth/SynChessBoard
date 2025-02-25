@@ -1,7 +1,10 @@
 package at.synchess.boardsoftware.front.controller;
 
+import at.synchess.boardsoftware.driver.SynChessDriver;
+import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
 
+import at.synchess.boardsoftware.front.model.ControllerUtils;
 import at.synchess.utils.ChessBoard;
 import at.synchess.utils.ChessNotation;
 import at.synchess.utils.Move;
@@ -9,6 +12,7 @@ import at.synchess.utils.Pieces;
 import at.synchess.utils.timers.FixedTimer;
 import at.synchess.utils.timers.Timer;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +39,7 @@ import java.util.List;
 public class GameController {
 
     private AppManager appManager;
+    private SynChessDriver scd;
     private int gameId;
     private ChessBoard chessUtils;
     private Timer timer;
@@ -64,7 +69,7 @@ public class GameController {
      * @param gameId ID of game being joined
      * @throws IOException If FXML File couldn't be opened
      */
-    public static void show(Stage primaryStage, AppManager logic, int gameId) throws IOException, MqttException {
+    public static void show(Stage primaryStage, AppManager logic, int gameId, SynChessDriver scd, boolean isCreator, Timer timer) throws IOException, MqttException {
         // Load FXML
         FXMLLoader loader = new FXMLLoader(GameController.class.getResource("/view/gameView.fxml"));
         Parent root = loader.load();
@@ -79,14 +84,24 @@ public class GameController {
         controller.setBoard(controller.chessUtils.board);
 
         controller.gameId = gameId;
+        controller.scd = scd;
         controller.lbStatus.setText("Current Game: " + gameId);
 
-        controller.timer = new FixedTimer(300, () -> {
+        controller.timer = timer;
+        controller.timer.setOnTimeout(() ->{
             controller.onTimeout();
             return null;
         });
-        controller.labelTimer.textProperty().bind(controller.timer.getSecondsLeft().asString());
-        controller.timer.startTicking(120);
+        controller.labelTimer.textProperty().bind(Bindings.createStringBinding(
+                () -> {
+                    return  String.format("%d:%02d", controller.timer.getSecondsLeft().getValue() / 60,  controller.timer.getSecondsLeft().getValue() % 60);
+                }, controller.timer.getSecondsLeft()
+                ));
+
+        if (!isCreator) {
+            controller.timer.startTicking(timer.getSecondsLeft().getValue());
+            logic.getClient().post(gameId, "START");
+        }
 
         primaryStage.getScene().setRoot(root);
         primaryStage.show();
@@ -99,7 +114,7 @@ public class GameController {
 
     @FXML
     void sendClicked(ActionEvent event) {
-        System.out.println("A");
+        //TODO: SynChessDriver.scanBoard()
     }
 
     @FXML
@@ -134,15 +149,25 @@ public class GameController {
      */
     public void onMessageReceived(String message){
         Platform.runLater(()-> {
-            String[] data = message.split(" ");
-            Move m = ChessNotation.parseAnnotation(data[0]);
-            chessUtils.applyMove(m);
-            displayMove(m);
+            if(!message.equals("START"))
+            {
+                String[] data = message.split(" ");
+                Move m = ChessNotation.parseAnnotation(data[0]);
+                chessUtils.applyMove(m);
+                displayMove(m);
+                try {
+                    ControllerUtils.commitMove(m, chessUtils, scd);
+                } catch (CCLException e) {
+                    ControllerUtils.showWarning("Couldn't move piece successful- Please move it manually", appManager.getPrimaryStage());
+                }
+            }
         });
 
     }
 
     public void onTimeout(){
+        lbStatus.setText("You ran out of time");
+       postMQTT("TIMEOUT");
 
     }
 
@@ -252,6 +277,14 @@ public class GameController {
             if (node instanceof Rectangle){
                 ((Rectangle) node).setFill(((GridPane.getRowIndex(node) + GridPane.getColumnIndex(node)) % 2 == 0) ? Color.BEIGE : Color.MIDNIGHTBLUE);
             }
+        }
+    }
+
+    private void postMQTT(String message){
+        try {
+            appManager.getClient().post(gameId, message);
+        } catch (MqttException e) {
+            ControllerUtils.showServerAlert("Couldn't post to server", appManager.getPrimaryStage());
         }
     }
 }
