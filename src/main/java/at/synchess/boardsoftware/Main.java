@@ -6,9 +6,6 @@ import at.synchess.boardsoftware.driver.connection.SerialDriverConnector;
 import at.synchess.boardsoftware.enums.ChessBoardSector;
 import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
-import at.synchess.boardsoftware.front.model.ControllerUtils;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 import java.util.Scanner;
 
@@ -21,7 +18,7 @@ public class Main {//extends Application {
     public AppManager appManager;
 
     public static void main(String[] args) {
-        String command = "";
+        String command;
         Scanner sc = new Scanner(System.in);
         CCLAbstracter cclAbstracter = new CCLAbstracter();
         SynChessDriver driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
@@ -40,6 +37,8 @@ public class Main {//extends Application {
                     case "sc1" -> printCharArray(driver.scan(ChessBoardSector.OUT_BLACK));
                     case "sc2" -> printCharArray(driver.scan(ChessBoardSector.CENTER_BOARD));
                     case "sc3" -> printCharArray(driver.scan(ChessBoardSector.OUT_WHITE));
+                    case "rf" -> driver.removePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), ChessBoardSector.OUT_BLACK);
+                    case "af" -> driver.revivePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), contents[3].charAt(0), ChessBoardSector.OUT_BLACK);
                 }
             } catch (CCLException e) {
                 e.printStackTrace();
@@ -49,8 +48,8 @@ public class Main {//extends Application {
     }
 
     private static void printCharArray(char[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            System.out.print(arr[i]);
+        for (char c : arr) {
+            System.out.print(c);
         }
 
         System.out.println();
