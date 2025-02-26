@@ -15,13 +15,13 @@ public class SynChessDriver {
         this.connection = connection;
     }
 
-
     //---------------------------------- Move Figure ----------------------------------//
     public void moveFigure(int x1, int y1, int x2, int y2) throws CCLException {
-        String command = abstracter.home() +
-
-                // TODO: go to x1, y1
-
+        String command =
+                abstracter.magnetOff() +
+                abstracter.home() +
+                abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + y1*CCLAbstracter.FULL_FIELD_STP) + // going to y1
+                abstracter.stepRight(1) +
                 abstracter.magnetOn() +
                 moveFigurePathFinder(x1, y1, x2, y2) +
                 abstracter.magnetOff() +
@@ -80,17 +80,6 @@ public class SynChessDriver {
     public void addFigure(int targX, int targY, int piece) {
         //TODO: Adds figure
     }
-
-    /**
-     * home(): Moves the motors back to 0/0
-     */
-    public void home() {
-        try {
-            sendToArduinoBlocking(abstracter.home(), 20);
-        } catch (CCLException e) {
-            throw new RuntimeException(e);
-        }
-    }
     //---------------------------------------------------------------------------------//
 
 
@@ -102,7 +91,7 @@ public class SynChessDriver {
      * @param sector Sector to be read
      * @return char array
      */
-    public char[] scan(ChessBoardSector sector) {
+    public char[] scan(ChessBoardSector sector) throws CCLException {
         String command = "";
         char[] returnVal;
 
@@ -112,13 +101,9 @@ public class SynChessDriver {
             case OUT_WHITE -> command = abstracter.readOutWhite();
         }
 
-        try {
-            String ret = sendToArduinoBlocking(command, 80);
-            returnVal = ret.toCharArray();
-            return returnVal;
-        } catch (CCLException e) {
-            throw new RuntimeException(e);
-        }
+        String ret = sendToArduinoBlocking(command, 80);
+        returnVal = ret.toCharArray();
+        return returnVal;
     }
     //--------------------------------------------------------------------------------//
 
@@ -193,6 +178,17 @@ public class SynChessDriver {
 
 
     //---------------------------------- Util Commands ----------------------------------//
+    /**
+     * home(): Moves the motors back to 0/0
+     */
+    public void home() throws CCLException {
+        sendToArduinoBlocking(abstracter.home(), 20);
+    }
+
+    /**
+     * closeRoutine(): Gets called when the program is shut down
+     * @throws SerialPortException if port couldn't be closed
+     */
     public void closeRoutine() throws SerialPortException {
         connection.close();
     }

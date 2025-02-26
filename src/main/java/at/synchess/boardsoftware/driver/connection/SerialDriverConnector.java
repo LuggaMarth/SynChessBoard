@@ -4,7 +4,7 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 
 public class SerialDriverConnector implements IDriverConnection {
-    private static final String ARDUINO_PORT_NAME = "/dev/ttyUSB0";
+    private final String ARDUINO_PORT_NAME = "/dev/ttyUSB0";
     private SerialPort serialPort;
 
     public SerialDriverConnector() {
