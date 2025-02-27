@@ -12,7 +12,7 @@ public class CCLAbstracter {
     public static final int HALF_FIELD_STP = 150;
     public static final int FULL_FIELD_STP = 300;
     public static final int STEPS_TO_FIRST_FIELD_Y = 250;
-    public static final int STEPS_TO_FIRST_FIELD_X = 1345; // TODO: CHANGE THAT
+    public static final int STEPS_TO_FIRST_FIELD_X = 1245; // TODO: CHANGE THAT
 
     private static final String COMMAND_AVAILABLE = "A";
     private static final String COMMAND_READ_CENTER = "R2";

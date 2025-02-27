@@ -24,14 +24,14 @@ public class SynChessDriver {
      * @param y2 Y2-Coordinate
      * @throws CCLException if command could not be executed
      */
-    public void moveFigure(int x1, int y1, int x2, int y2) throws CCLException {
+    public void movePiece(int x1, int y1, int x2, int y2) throws CCLException {
         String command = abstracter.magnetOff() +
                 abstracter.home() +
                 abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + y1 * CCLAbstracter.FULL_FIELD_STP) + // going to y1
                 abstracter.stepRight(CCLAbstracter.STEPS_TO_FIRST_FIELD_X + x1 * CCLAbstracter.FULL_FIELD_STP) + // going to x1
                 abstracter.magnetOn() +
                 abstracter.wait(300) + // just wait, so that the magnet has a grip
-                moveFigurePathFinder(x1, y1, x2, y2) +
+                movePiecePathFinder(x1, y1, x2, y2) +
                 abstracter.magnetOff();
 
         sendToArduinoBlocking(command, 60);
@@ -45,7 +45,7 @@ public class SynChessDriver {
      * @param y2 Y2-Coordinate
      * @return step command sequence to the best path
      */
-    private String moveFigurePathFinder(int x1, int y1, int x2, int y2) {
+    private String movePiecePathFinder(int x1, int y1, int x2, int y2) {
         StringBuilder endCommand = new StringBuilder();
 
         // check which 'zone'
@@ -114,10 +114,10 @@ public class SynChessDriver {
                 ((sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(0)) : (abstracter.stepLeft(0))) + // which sector to go to TODO Distanz zum ersten feld vom jeweiligen out
                 ((firstFreeIndex % 2 != 0) ? (abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP)) : "") + // if typ is on right, then go right
                 abstracter.stepDown(yfin * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) +
-                abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP) +
+                abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP) +
                 abstracter.magnetOff();
 
-        sendToArduinoBlocking(command, 80);
+        executeSplitCommand(command, 80);
     }
 
     /**
@@ -173,15 +173,15 @@ public class SynChessDriver {
             case OUT_WHITE -> command = abstracter.readOutWhite();
         }
 
-        String ret = sendToArduinoBlocking(command, 80);
+        String ret = sendToArduinoBlocking(abstracter.home() + command, 80);
         returnVal = ret.toCharArray();
         return returnVal;
     }
     //--------------------------------------------------------------------------------//
 
 
-    //---------------------------------- Send to Arduino ----------------------------------//
 
+    //---------------------------------- Send to Arduino ----------------------------------//
     /**
      * sendToArduinoBlocking(): Sends the given command to the Arduino.
      *
@@ -218,7 +218,6 @@ public class SynChessDriver {
      * raw command handling!
      *
      * @param command sends the given command directly to the serial port
-     * @deprecated
      */
     public String executeSplitCommand(String command, int timeout) throws CCLException {
         String returnValue = "";
