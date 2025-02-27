@@ -34,7 +34,8 @@ public class SynChessDriver {
                 movePiecePathFinder(x1, y1, x2, y2) +
                 abstracter.magnetOff();
 
-        sendToArduinoBlocking(command, 60);
+        System.out.println(command);
+        //executeSplitCommand(command, 60);
     }
 
     /**
@@ -89,7 +90,7 @@ public class SynChessDriver {
      * @param y Y - Coordinate
      */
     public void removePiece(int x, int y, ChessBoardSector sector) throws CCLException {
-        char[] scannedField = scan(sector);
+        /*char[] scannedField = scan(sector);
         int firstFreeIndex = -1, index = 0;
 
         // check which index is the first free one
@@ -98,7 +99,8 @@ public class SynChessDriver {
 
             index++;
         }
-
+        */
+        int firstFreeIndex = 7;
         int yfin = firstFreeIndex / 2;
 
         // build move command
@@ -111,13 +113,14 @@ public class SynChessDriver {
                 abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP) + // take it out of the field
                 abstracter.stepUp(y * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) + // step up to the first field
                 abstracter.stepLeft(x * CCLAbstracter.FULL_FIELD_STP) +
-                ((sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(0)) : (abstracter.stepLeft(0))) + // which sector to go to TODO Distanz zum ersten feld vom jeweiligen out
+                ((sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(0)) : (abstracter.stepLeft(210+2*CCLAbstracter.FULL_FIELD_STP))) + // which sector to go to TODO Distanz zum ersten feld vom jeweiligen out
                 ((firstFreeIndex % 2 != 0) ? (abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP)) : "") + // if typ is on right, then go right
                 abstracter.stepDown(yfin * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) +
                 abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP) +
                 abstracter.magnetOff();
 
-        executeSplitCommand(command, 80);
+        System.out.println(command);
+        //executeSplitCommand(command, 80);
     }
 
     /**
@@ -149,7 +152,8 @@ public class SynChessDriver {
         // TODO: Build the command
 
         // send of to arduino
-        sendToArduinoBlocking(command, 80);
+        System.out.println(command);
+        //executeSplitCommand(command, 60);
     }
     //---------------------------------------------------------------------------------//
 
