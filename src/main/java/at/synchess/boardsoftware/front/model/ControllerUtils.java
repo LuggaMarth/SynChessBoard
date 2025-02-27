@@ -53,10 +53,10 @@ public class ControllerUtils {
             case STANDARD:
                 if (cb.board[m.getTargX()][m.getTargY()] != Pieces.NONE){
 
-                    driver.removeFigure(m.getTargX(), m.getTargY());
+                    //driver.removeFigure(m.getTargX(), m.getTargY()); // TODO: CHESS SECTOR EINBAUEN, damit driver weiß ob schwarz bzw weiß
                 }
 
-                driver.moveFigure(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
+                driver.movePiece(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
             break;
             case CASTLE:
                 switch (m.getCastleType()){
@@ -64,9 +64,9 @@ public class ControllerUtils {
                 }
             break;
             case PROMOTION:
-                driver.moveFigure(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
-                driver.removeFigure(m.getTargX(),m.getTargY());
-                driver.addFigure(m.getTargX(),m.getTargY(), m.getPiece());
+                driver.movePiece(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
+                //driver.removeFigure(m.getTargX(),m.getTargY()); // TODO: CHESS SECTOR EINBAUEN, damit driver weiß ob schwarz bzw weiß
+                //driver.addFigure(m.getTargX(),m.getTargY(), m.getPiece()); TODO: KIKS BITTE AENDERE piece to char, damit wir mit den serial codes arbeiten können
         }
     }
 

@@ -1,12 +1,18 @@
 package at.synchess.boardsoftware.driver;
 
 import at.synchess.boardsoftware.enums.StepDirection;
-import jssc.SerialPortException;
-import jssc.SerialPortTimeoutException;
 
+/**
+ * Class CCLAbstracter: Has methods that abstract the methods of the driver and
+ * returns fully qualified CCL commands.
+ *
+ * @author Luca Marth
+ */
 public class CCLAbstracter {
     public static final int HALF_FIELD_STP = 150;
     public static final int FULL_FIELD_STP = 300;
+    public static final int STEPS_TO_FIRST_FIELD_Y = 270;
+    public static final int STEPS_TO_FIRST_FIELD_X = 1150; // TODO: CHANGE THAT
 
     private static final String COMMAND_AVAILABLE = "A";
     private static final String COMMAND_READ_CENTER = "R2";
@@ -15,59 +21,67 @@ public class CCLAbstracter {
     private static final String COMMAND_STEP = "S";
     private static final String COMMAND_HOME = "H";
     private static final String COMMAND_MAGNET = "M";
+    private static final String COMMAND_WAIT= "W";
+
+    private static final String SEPARATOR = ";";
 
 
     //---------------------------------- Utility Commands ----------------------------------//
 
     /**
-     * isDriverAvailable(): Checks if the driver is available!
-     * CCLSyntax: A
-     * @return String
+     * isDriverAvailable(): Checks if the driver is available
+     * @return command
      */
     public String isDriverAvailable() {
-        return COMMAND_AVAILABLE + ";";
+        return COMMAND_AVAILABLE + SEPARATOR;
     }
 
     /**
      * home(): Return CoreXY to (0 0)
      */
     public String home() {
-        return COMMAND_HOME + ";";
+        return COMMAND_HOME + SEPARATOR;
     }
 
+    /**
+     * wait(): Waits for a given amount of milliseconds
+     * @param milliseconds time to wait
+     * @return command
+     */
+    public String wait(int milliseconds) { return COMMAND_WAIT + milliseconds + SEPARATOR; }
     //--------------------------------------------------------------------------------------//
 
 
     //---------------------------------- Reading Commands ----------------------------------//
     public String readCenter() {
-        return COMMAND_READ_CENTER + ";";
+        return COMMAND_READ_CENTER + SEPARATOR;
     }
 
     public String readOutWhite() {
-        return COMMAND_READ_OUT_WHITE + ";";
+        return COMMAND_READ_OUT_WHITE + SEPARATOR;
     }
 
     public String readOutBlack() {
-        return COMMAND_READ_OUT_BLACK + ";";
+        return COMMAND_READ_OUT_BLACK + SEPARATOR;
     }
     //--------------------------------------------------------------------------------------//
 
 
     //---------------------------------- Step Commands ----------------------------------//
     public String stepLeft(int steps) {
-        return COMMAND_STEP + "L" + steps + ";";
+        return step(StepDirection.LEFT, steps);
     }
 
     public String stepRight(int steps) {
-        return COMMAND_STEP + "R" + steps + ";";
+        return step(StepDirection.RIGHT, steps);
     }
 
     public String stepUp(int steps) {
-        return COMMAND_STEP + "U" + steps + ";";
+        return step(StepDirection.UP, steps);
     }
 
     public String stepDown(int steps) {
-        return COMMAND_STEP + "D" + steps + ";";
+        return step(StepDirection.DOWN, steps);
     }
 
     public String step(StepDirection direction, int steps) {
@@ -75,16 +89,16 @@ public class CCLAbstracter {
 
         switch (direction) {
             case UP:
-                commandToSend += "U" + steps + ";";
+                commandToSend += "U" + steps + SEPARATOR;
                 break;
             case DOWN:
-                commandToSend += "D" + steps + ";";
+                commandToSend += "D" + steps + SEPARATOR;
                 break;
             case LEFT:
-                commandToSend += "L" + steps + ";";
+                commandToSend += "L" + steps + SEPARATOR;
                 break;
             case RIGHT:
-                commandToSend += "R" + steps + ";";
+                commandToSend += "R" + steps + SEPARATOR;
                 break;
         }
 
@@ -95,11 +109,11 @@ public class CCLAbstracter {
 
     //---------------------------------- Magnet Commands ----------------------------------//
     public String magnetOn() {
-        return COMMAND_MAGNET + "1";
+        return COMMAND_MAGNET + "1" + SEPARATOR;
     }
 
     public String magnetOff() {
-        return COMMAND_MAGNET + "0";
+        return COMMAND_MAGNET + "0" + SEPARATOR;
     }
     //-----------------------------------------------------------------------------------//
 }

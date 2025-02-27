@@ -15,22 +15,38 @@ public class SynChessDriver {
         this.connection = connection;
     }
 
-
     //---------------------------------- Move Figure ----------------------------------//
-    public void moveFigure(int x1, int y1, int x2, int y2) throws CCLException {
-        String command = abstracter.home() +
-
-                // TODO: go to x1, y1
-
+    /**
+     * moveFigure(): Moves a figure from (x1, y1) to (x2, y2).
+     * @param x1 X1-Coordinate
+     * @param y1 Y1-Coordinate
+     * @param x2 X2-Coordinate
+     * @param y2 Y2-Coordinate
+     * @throws CCLException if command could not be executed
+     */
+    public void movePiece(int x1, int y1, int x2, int y2) throws CCLException {
+        String command = abstracter.magnetOff() +
+                abstracter.home() +
+                abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + y1 * CCLAbstracter.FULL_FIELD_STP) + // going to y1
+                abstracter.stepRight(CCLAbstracter.STEPS_TO_FIRST_FIELD_X + x1 * CCLAbstracter.FULL_FIELD_STP) + // going to x1
                 abstracter.magnetOn() +
-                moveFigurePathFinder(x1, y1, x2, y2) +
-                abstracter.magnetOff() +
-                abstracter.home();
+                abstracter.wait(300) + // just wait, so that the magnet has a grip
+                movePiecePathFinder(x1, y1, x2, y2) +
+                abstracter.magnetOff();
 
-        sendToArduinoBlocking(command, 60);
+        System.out.println(command);
+        //executeSplitCommand(command, 60);
     }
 
-    private String moveFigurePathFinder(int x1, int y1, int x2, int y2) {
+    /**
+     * moveFigurePathFinder(): Calculates the easiest path between two points
+     * @param x1 X1-Coordinate
+     * @param y1 Y1-Coordinate
+     * @param x2 X2-Coordinate
+     * @param y2 Y2-Coordinate
+     * @return step command sequence to the best path
+     */
+    private String movePiecePathFinder(int x1, int y1, int x2, int y2) {
         StringBuilder endCommand = new StringBuilder();
 
         // check which 'zone'
@@ -67,42 +83,91 @@ public class SynChessDriver {
     }
 
     /**
-     * removeFigure(): Moves a chess figure from Point (x|y) out to the next available spot in the
+     * removePiece(): Moves a chess figure from Point (x|y) out to the next available spot in the
      * reservoir.
      *
-     * @param targX X - Coordinate
-     * @param targY Y - Coordinate
+     * @param x X - Coordinate
+     * @param y Y - Coordinate
      */
-    public void removeFigure(int targX, int targY) {
-        //TODO: puts figure to the side
-    }
+    public void removePiece(int x, int y, ChessBoardSector sector) throws CCLException {
+        /*char[] scannedField = scan(sector);
+        int firstFreeIndex = -1, index = 0;
 
-    public void addFigure(int targX, int targY, int piece) {
-        //TODO: Adds figure
+        // check which index is the first free one
+        while(firstFreeIndex == -1 && index < scannedField.length) {
+            if(scannedField[index] != '0') firstFreeIndex = index;
+
+            index++;
+        }
+        */
+        int firstFreeIndex = 7;
+        int yfin = firstFreeIndex / 2;
+
+        // build move command
+        String command = abstracter.magnetOff() +
+                abstracter.home() +
+                abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + y * CCLAbstracter.FULL_FIELD_STP) + // going to y1
+                abstracter.stepRight(CCLAbstracter.STEPS_TO_FIRST_FIELD_X + x * CCLAbstracter.FULL_FIELD_STP) + // going to x1
+                abstracter.magnetOn() +
+                abstracter.wait(300) +
+                abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP) + // take it out of the field
+                abstracter.stepUp(y * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) + // step up to the first field
+                abstracter.stepLeft(x * CCLAbstracter.FULL_FIELD_STP) +
+                ((sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(0)) : (abstracter.stepLeft(210+2*CCLAbstracter.FULL_FIELD_STP))) + // which sector to go to TODO Distanz zum ersten feld vom jeweiligen out
+                ((firstFreeIndex % 2 != 0) ? (abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP)) : "") + // if typ is on right, then go right
+                abstracter.stepDown(yfin * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) +
+                abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP) +
+                abstracter.magnetOff();
+
+        System.out.println(command);
+        //executeSplitCommand(command, 80);
     }
 
     /**
-     * home(): Moves the motors back to 0/0
+     * revivePiece(): Gets the desired piece from the specified sector and puts it to targX and targY.
+     * @param x From where X
+     * @param y From where Y
+     * @param piece which piece
      */
-    public void home() {
-        try {
-            sendToArduinoBlocking(abstracter.home(), 20);
-        } catch (CCLException e) {
-            throw new RuntimeException(e);
+    public void revivePiece(int x, int y, char piece, ChessBoardSector sector) throws CCLException {
+        // remove old piece
+        removePiece(x, y, sector);
+
+        // retrieve new piece
+        char[] scannedField = scan(sector);
+        int indexOfPiece = -1, index = 0;
+
+        // check where the piece is located
+        while(indexOfPiece == -1 && index < scannedField.length) {
+            if(scannedField[index] == piece) indexOfPiece = index;
+            index++;
         }
+
+        // if piece could not be found
+        if(indexOfPiece == -1) throw new CCLException("Piece not in out!");
+
+        // build command
+        String command = abstracter.magnetOff();
+
+        // TODO: Build the command
+
+        // send of to arduino
+        System.out.println(command);
+        //executeSplitCommand(command, 60);
     }
     //---------------------------------------------------------------------------------//
 
 
-
     //---------------------------------- Scan Board ----------------------------------//
+
     /**
      * scan(): Returns a char array based on the scanned chessboard. Depending on the chess sector
      * either length = 32 or 64.
+     *
      * @param sector Sector to be read
      * @return char array
      */
-    public char[] scan(ChessBoardSector sector) {
+    public char[] scan(ChessBoardSector sector) throws CCLException {
         String command = "";
         char[] returnVal;
 
@@ -112,13 +177,9 @@ public class SynChessDriver {
             case OUT_WHITE -> command = abstracter.readOutWhite();
         }
 
-        try {
-            String ret = sendToArduinoBlocking(command, 80);
-            returnVal = ret.toCharArray();
-            return returnVal;
-        } catch (CCLException e) {
-            throw new RuntimeException(e);
-        }
+        String ret = sendToArduinoBlocking(abstracter.home() + command, 80);
+        returnVal = ret.toCharArray();
+        return returnVal;
     }
     //--------------------------------------------------------------------------------//
 
@@ -127,6 +188,7 @@ public class SynChessDriver {
     //---------------------------------- Send to Arduino ----------------------------------//
     /**
      * sendToArduinoBlocking(): Sends the given command to the Arduino.
+     *
      * @param command Command
      * @param timeout Timeout
      * @return read string
@@ -145,7 +207,7 @@ public class SynChessDriver {
                 retval = connection.readString();
             }
 
-            if(retval == null) {
+            if (retval == null) {
                 throw new CCLException("Timed out!");
             }
 
@@ -160,7 +222,6 @@ public class SynChessDriver {
      * raw command handling!
      *
      * @param command sends the given command directly to the serial port
-     * @deprecated
      */
     public String executeSplitCommand(String command, int timeout) throws CCLException {
         String returnValue = "";
@@ -191,8 +252,20 @@ public class SynChessDriver {
     //-------------------------------------------------------------------------------------//
 
 
-
     //---------------------------------- Util Commands ----------------------------------//
+
+    /**
+     * home(): Moves the motors back to 0/0
+     */
+    public void home() throws CCLException {
+        sendToArduinoBlocking(abstracter.home(), 20);
+    }
+
+    /**
+     * closeRoutine(): Gets called when the program is shut down
+     *
+     * @throws SerialPortException if port couldn't be closed
+     */
     public void closeRoutine() throws SerialPortException {
         connection.close();
     }
