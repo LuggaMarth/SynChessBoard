@@ -32,7 +32,7 @@ public class Main {//extends Application {
             try {
                 switch (contents[0]) {
                     case "M" ->
-                            driver.moveFigure(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), Integer.parseInt(contents[3]), Integer.parseInt(contents[4]));
+                            driver.movePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), Integer.parseInt(contents[3]), Integer.parseInt(contents[4]));
                     case "H" -> driver.home();
                     case "sc1" -> printCharArray(driver.scan(ChessBoardSector.OUT_BLACK));
                     case "sc2" -> printCharArray(driver.scan(ChessBoardSector.CENTER_BOARD));
@@ -68,7 +68,7 @@ public class Main {//extends Application {
 
     @Override
     public void stop() {
-        appManager.closeRoutine();
+        //appManager.closeRoutine();
     }
     */
 }

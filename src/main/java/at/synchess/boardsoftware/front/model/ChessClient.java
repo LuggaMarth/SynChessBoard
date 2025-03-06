@@ -32,7 +32,7 @@ public class ChessClient {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected to " + host + ":" + port);
 
-            mqttClient = new MqttClient("tcp://localhost:3110", myID);
+            mqttClient = new MqttClient("tcp://localhost:3110", myID,null);
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
             mqttClient.connect(options);
@@ -50,6 +50,7 @@ public class ChessClient {
 
     public void post(int gameid, String message) throws MqttException {
         MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+        mqttMessage.setQos(2);
         mqttClient.publish(gameid + "", mqttMessage);
     }
 

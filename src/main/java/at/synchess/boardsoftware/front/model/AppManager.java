@@ -84,6 +84,10 @@ public class AppManager {
         return client;
     }
 
+    public SynChessDriver getDriver() {
+        return driver;
+    }
+
     public void showGameList() throws AppManagerException {
         try {
             GameListController.show(getPrimaryStage(), this, client);
