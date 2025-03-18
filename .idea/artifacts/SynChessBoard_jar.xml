@@ -1,18 +1,22 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="SynChessBoard:jar">
+  <artifact name="SynChessBoard:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/SynChessBoard_jar</output-path>
-    <root id="archive" name="SynChessBoard.jar">
-      <element id="module-output" name="SynChessBoard" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/21/javafx-base-21-win.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/src/main/resources/lib/ChessUtils.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/21/javafx-fxml-21.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/scream3r/jssc/2.8.0/jssc-2.8.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/21/javafx-controls-21.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21/javafx-graphics-21-win.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/21/javafx-controls-21-win.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/21/javafx-fxml-21-win.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/21/javafx-base-21.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21/javafx-graphics-21.jar" path-in-jar="/" />
+    <root id="root">
+      <element id="archive" name="SynChessBoard.jar">
+        <element id="module-output" name="SynChessBoard" />
+      </element>
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:23" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-base:23" />
+      <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.36" />
+      <element id="library" level="project" name="Maven: io.github.java-native:jssc:2.9.6" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-base:win:23" />
+      <element id="library" level="module" name="Maven: at.synchess:ChessUtils:1.0" module-name="SynChessBoard" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:win:23" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:win:23" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:23" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:23" />
+      <element id="library" level="project" name="Maven: org.scijava:native-lib-loader:2.5.0" />
+      <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:win:23" />
     </root>
   </artifact>
 </component>

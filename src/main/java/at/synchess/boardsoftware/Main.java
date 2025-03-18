@@ -1,51 +1,74 @@
 package at.synchess.boardsoftware;
 
-import at.synchess.boardsoftware.core.driver.SCDCommandLayer;
-import at.synchess.boardsoftware.exceptions.SynChessCoreException;
+import at.synchess.boardsoftware.driver.CCLAbstracter;
+import at.synchess.boardsoftware.driver.SynChessDriver;
+import at.synchess.boardsoftware.driver.connection.SerialDriverConnector;
+import at.synchess.boardsoftware.enums.ChessBoardSector;
+import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 import java.util.Scanner;
 
 /**
- * at.htlwels.Main: Handles the start of the JavaFX - Application.
+ * Main: Handles the start of the JavaFX - Application.
  * @author Kilian Nussbaumer & Luca Marth
  */
-public class Main extends Application {
+public class Main {//extends Application {
+    public static String INTERFACE_NAME = "eth0";
     public AppManager appManager;
 
     public static void main(String[] args) {
-        SCDCommandLayer scdCommandLayer = new SCDCommandLayer();
-        String cmd = "";
+        String command;
         Scanner sc = new Scanner(System.in);
+        CCLAbstracter cclAbstracter = new CCLAbstracter();
+        SynChessDriver driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
 
-//        do {
-//            System.out.print("> ");
-//            cmd = sc.nextLine();
-//
-//            if(cmd.equals("test")) {
-//                try {
-//                    scdCommandLayer.getCore().executeCommand("SD200;SU100;SL100;SD100;SU200;SL120;SD200;SR70;SL140;SR70;SU200;SL120;SD200;SU200;SL100;", 10000);
-//                } catch (SynChessCoreException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        } while(!cmd.equals("exit"));
+        do {
+            System.out.print("> ");
+            command = sc.nextLine();
 
-        try {
-            scdCommandLayer.moveFromTo(1,1,8,6);
-        } catch (SynChessCoreException e) {
-            throw new RuntimeException(e);
+            String[] contents = command.split(" ");
+
+            try {
+                switch (contents[0]) {
+                    case "M" ->
+                            driver.movePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), Integer.parseInt(contents[3]), Integer.parseInt(contents[4]));
+                    case "H" -> driver.home();
+                    case "sc1" -> printCharArray(driver.scan(ChessBoardSector.OUT_BLACK));
+                    case "sc2" -> printCharArray(driver.scan(ChessBoardSector.CENTER_BOARD));
+                    case "sc3" -> printCharArray(driver.scan(ChessBoardSector.OUT_WHITE));
+                    case "rf" -> driver.removePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), ChessBoardSector.OUT_BLACK);
+                    case "af" -> driver.revivePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), contents[3].charAt(0), ChessBoardSector.OUT_BLACK);
+                }
+            } catch (CCLException e) {
+                e.printStackTrace();
+            }
+        } while(!command.equals("exit"));
+        //launch(args);
+    }
+
+    private static void printCharArray(char[] arr) {
+        for (char c : arr) {
+            System.out.print(c);
         }
 
-        launch(args);
+        System.out.println();
     }
 
-
+    /*
     @Override
     public void start(Stage primaryStage) throws Exception {
-        appManager = new AppManager(primaryStage);
-        appManager.showTitleScreen();
+        try {
+            appManager = new AppManager(primaryStage);
+            appManager.showTitleScreen();
+        } catch (CCLException s){
+            ControllerUtils.showSafeAlert(s.getMessage());
+        }
     }
+
+    @Override
+    public void stop() {
+        //appManager.closeRoutine();
+    }
+    */
 }
