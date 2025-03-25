@@ -116,7 +116,7 @@ public class GameController {
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
     }
-
+    //X
     @FXML
     void sendClicked(ActionEvent event) throws MqttException, CCLException {
         char[] boardScan = appManager.getDriver().scan(ChessBoardSector.CENTER_BOARD);
@@ -132,7 +132,7 @@ public class GameController {
             ControllerUtils.showWarning("Illegal move, please try again", appManager.getPrimaryStage());
         }
     }
-
+    //X
     @FXML
     public void initialize() {
 
@@ -158,7 +158,7 @@ public class GameController {
     }
 
 
-
+//X
     /**
      * Opened by the ChessClient, whenever a Mqtt-Announcement is received
      * @param message Message
@@ -192,7 +192,7 @@ public class GameController {
        postMQTT("TIMEOUT");
 
     }
-
+    //X
     private void translateMove(Move m) throws CCLException {
         switch (m.getMoveType()){
             case STANDARD:
@@ -203,7 +203,6 @@ public class GameController {
             case PROMOTION:
                 appManager.getDriver().removePiece(m.getStartY(),m.getStartX(), Pieces.isBlack(m.getPiece()) ? ChessBoardSector.OUT_BLACK : ChessBoardSector.OUT_WHITE);
                 appManager.getDriver().revivePiece(m.getStartY(),m.getStartX(), Pieces.table[3][m.getPiece()]);
-                //TODO: Change to String
             case CASTLE:
                 switch (m.getCastleType()){
                     case 0:
@@ -229,7 +228,7 @@ public class GameController {
 
     }
 
-
+    //X
     private void displayMove(Move m){
         washBoard();
         switch (m.getMoveType()){
@@ -283,7 +282,7 @@ public class GameController {
 
     }
 
-
+    //X
     /**
      * Sets the displayed board to the state "values"
      * IDs of the pieces are notated in the ChessUtils library
@@ -305,7 +304,7 @@ public class GameController {
             }
         }
     }
-
+    //X
     private void setPiece(int piece, int y, int x){
         ImageView newPiece = new ImageView(pieceImages[piece]);
         newPiece.setFitHeight(45);
@@ -313,7 +312,7 @@ public class GameController {
         currPieces.add(newPiece);
         chessBoard.add(newPiece, x, y);
     }
-
+    //X
     private void clearTile(int y, int x){
         chessBoard.getChildren().removeIf(node -> {
             if ( GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x)

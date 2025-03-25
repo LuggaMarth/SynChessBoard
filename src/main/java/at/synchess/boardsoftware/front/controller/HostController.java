@@ -61,10 +61,10 @@ public class HostController {
         HostController controller = loader.getController();
         controller.setAppManager(logic);
 
-        controller.timerClasses = new Class<?>[]{FixedTimer.class, FischerTimer.class, BronsteinTimer.class, SanddialTimer.class};
+        controller.timerClasses = new Class[]{FixedTimer.class, FischerTimer.class, BronsteinTimer.class, SanddialTimer.class};
         controller.dropDownTimer.getItems().addAll("Fixed","Fischer","Bronstein","Sanduhr");
         controller.dropDownTimer.setValue("Fixed");
-        SpinnerValueFactory<Integer> seconds = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
+        SpinnerValueFactory<Integer> seconds = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0);
         SpinnerValueFactory<Integer> minutes = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 300, 10);
         controller.spinnerSeconds.setValueFactory(seconds);
         controller.spinnerMinutes.setValueFactory(minutes);

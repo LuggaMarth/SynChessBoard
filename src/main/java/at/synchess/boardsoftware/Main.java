@@ -6,6 +6,9 @@ import at.synchess.boardsoftware.driver.connection.SerialDriverConnector;
 import at.synchess.boardsoftware.enums.ChessBoardSector;
 import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
+import at.synchess.boardsoftware.front.model.ControllerUtils;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 import java.util.Scanner;
 
@@ -13,7 +16,7 @@ import java.util.Scanner;
  * Main: Handles the start of the JavaFX - Application.
  * @author Kilian Nussbaumer & Luca Marth
  */
-public class Main {//extends Application {
+public class Main extends Application {
     public static String INTERFACE_NAME = "eth0";
     public AppManager appManager;
 
@@ -21,7 +24,7 @@ public class Main {//extends Application {
         String command;
         Scanner sc = new Scanner(System.in);
         CCLAbstracter cclAbstracter = new CCLAbstracter();
-        SynChessDriver driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
+        /*SynChessDriver driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
 
         do {
             System.out.print("> ");
@@ -44,7 +47,9 @@ public class Main {//extends Application {
                 e.printStackTrace();
             }
         } while(!command.equals("exit"));
-        //launch(args);
+
+         */
+        launch(args);
     }
 
     private static void printCharArray(char[] arr) {
@@ -55,7 +60,7 @@ public class Main {//extends Application {
         System.out.println();
     }
 
-    /*
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
@@ -70,5 +75,5 @@ public class Main {//extends Application {
     public void stop() {
         //appManager.closeRoutine();
     }
-    */
+
 }
