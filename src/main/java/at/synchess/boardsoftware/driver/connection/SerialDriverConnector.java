@@ -1,5 +1,7 @@
 package at.synchess.boardsoftware.driver.connection;
 
+import at.synchess.boardsoftware.driver.SynChessDriver;
+import at.synchess.boardsoftware.exceptions.SynChessDriverException;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
@@ -7,40 +9,42 @@ public class SerialDriverConnector implements IDriverConnection {
     private final String ARDUINO_PORT_NAME = "/dev/ttyUSB0";
     private SerialPort serialPort;
 
-    public SerialDriverConnector() {
-        try {
-            open();
-        } catch (SerialPortException e) {
-            // TODO: Kiks exception handling
-            e.printStackTrace();
-        }
+    public SerialDriverConnector() throws SynChessDriverException {
+        open();
     }
 
     @Override
-    public void open() throws SerialPortException {
+    public void open() throws SynChessDriverException {
         serialPort = new SerialPort(ARDUINO_PORT_NAME);
 
-        // open the serial port
-        serialPort.openPort();
+        try {
+            // open the serial port
+            serialPort.openPort();
 
-        // set parameters of the serial port
-        serialPort.setParams(
-                SerialPort.BAUDRATE_9600,
-                SerialPort.DATABITS_8,
-                SerialPort.STOPBITS_1,
-                SerialPort.PARITY_NONE
-        );
+            // set parameters of the serial port
+            serialPort.setParams(
+                    SerialPort.BAUDRATE_9600,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE
+            );
 
-        flushSerialPort();
+            flush();
+        } catch (SerialPortException e) {
+            throw new SynChessDriverException(e.getMessage());
+        }
     }
 
     /**
      * close(): closes the connection to the Arduino
-     * @throws SerialPortException throws stuff
      */
     @Override
-    public void close() throws SerialPortException {
-        serialPort.closePort();
+    public void close() throws SynChessDriverException {
+        try {
+            serialPort.closePort();
+        } catch (SerialPortException e) {
+            throw new SynChessDriverException(e.getMessage());
+        }
     }
 
     /**
@@ -49,23 +53,32 @@ public class SerialDriverConnector implements IDriverConnection {
      * @param data sends the given command directly to the serial port
      */
     @Override
-    public void write(String data) throws SerialPortException {
-        serialPort.writeString(data);
+    public void write(String data) throws SynChessDriverException {
+        try {
+            serialPort.writeString(data);
+        } catch (SerialPortException e) {
+            throw new SynChessDriverException(e.getMessage());
+        }
     }
 
     @Override
-    public String readString() throws SerialPortException {
-        return serialPort.readString();
+    public String read() throws SynChessDriverException {
+        try {
+            return serialPort.readString();
+        } catch (SerialPortException e) {
+            throw new SynChessDriverException(e.getMessage());
+        }
     }
 
+
     @Override
-    public void flushSerialPort() {
+    public void flush() throws SynChessDriverException {
         try {
             while (serialPort.getInputBufferBytesCount() > 0) {
                 serialPort.readBytes(serialPort.getInputBufferBytesCount());
             }
         } catch (SerialPortException e) {
-            e.printStackTrace();
+            throw new SynChessDriverException(e.getMessage());
         }
     }
 

@@ -1,11 +1,11 @@
 package at.synchess.boardsoftware.driver.connection;
 
-import jssc.SerialPortException;
+import at.synchess.boardsoftware.exceptions.SynChessDriverException;
 
 public interface IDriverConnection {
-    void open() throws SerialPortException;
-    void close() throws SerialPortException;
-    void write(String data) throws SerialPortException;
-    String readString() throws SerialPortException;
-    void flushSerialPort();
+    void open() throws SynChessDriverException;
+    void close() throws SynChessDriverException;
+    void write(String data) throws SynChessDriverException;
+    String read() throws SynChessDriverException;
+    void flush() throws SynChessDriverException;
 }

@@ -6,6 +6,7 @@ import at.synchess.boardsoftware.driver.connection.SerialDriverConnector;
 import at.synchess.boardsoftware.enums.ChessBoardSector;
 import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
+import jssc.SerialPortException;
 import at.synchess.boardsoftware.front.model.ControllerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -20,7 +21,7 @@ public class Main extends Application {
     public static String INTERFACE_NAME = "eth0";
     public AppManager appManager;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SerialPortException {
         String command;
         Scanner sc = new Scanner(System.in);
         CCLAbstracter cclAbstracter = new CCLAbstracter();
@@ -40,8 +41,8 @@ public class Main extends Application {
                     case "sc1" -> printCharArray(driver.scan(ChessBoardSector.OUT_BLACK));
                     case "sc2" -> printCharArray(driver.scan(ChessBoardSector.CENTER_BOARD));
                     case "sc3" -> printCharArray(driver.scan(ChessBoardSector.OUT_WHITE));
-                    case "rf" -> driver.removePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), ChessBoardSector.OUT_BLACK);
-                    case "af" -> driver.revivePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), contents[3].charAt(0), ChessBoardSector.OUT_BLACK);
+                    case "rf" -> driver.removePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), (contents[3].equals("B") ? ChessBoardSector.OUT_BLACK : ChessBoardSector.OUT_WHITE));
+                    case "af" -> driver.revivePiece(Integer.parseInt(contents[1]), Integer.parseInt(contents[2]), contents[3], (contents[4].equals("B") ? ChessBoardSector.OUT_BLACK : ChessBoardSector.OUT_WHITE));
                 }
             } catch (CCLException e) {
                 e.printStackTrace();
