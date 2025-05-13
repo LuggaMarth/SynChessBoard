@@ -65,7 +65,7 @@ public class TitleScreenController {
 
 
         primaryStage.setTitle("SynChess - You Won't see this");
-        primaryStage.setFullScreen(true);
+        //primaryStage.setFullScreen(true);
 
         if (primaryStage.getScene() != null)
         primaryStage.getScene().setRoot(root);
@@ -142,12 +142,9 @@ public class TitleScreenController {
         firstButton.setText(buttonConf[index][0]);
         secondButton.setText(buttonConf[index][1]);
 
-
-
-
         firstButton.setOnAction(event -> {
                         try {
-                        (this.getClass().getMethod(buttonConf[index][2], new Class[]{ActionEvent.class})).invoke(this, new ActionEvent());
+                        (this.getClass().getMethod(buttonConf[index][2], ActionEvent.class)).invoke(this, new ActionEvent());
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                             //Technically can't occur I think?
                             e.printStackTrace();
@@ -156,7 +153,7 @@ public class TitleScreenController {
                     });
         secondButton.setOnAction(event -> {
             try {
-                (this.getClass().getMethod(buttonConf[index][3],new Class[]{ActionEvent.class})).invoke(this, new ActionEvent());
+                (this.getClass().getMethod(buttonConf[index][3],ActionEvent.class)).invoke(this, new ActionEvent());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e){
                 //Technically can't occur I think?
                 e.printStackTrace();

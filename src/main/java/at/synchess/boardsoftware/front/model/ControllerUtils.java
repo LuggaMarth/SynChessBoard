@@ -47,27 +47,4 @@ public class ControllerUtils {
         a.initOwner(primStage);
         a.show();
     }
-
-    public static void commitMove(Move m, ChessBoard cb, SynChessDriver driver) throws CCLException {
-        switch (m.getMoveType()){
-            case STANDARD:
-                if (cb.board[m.getTargX()][m.getTargY()] != Pieces.NONE){
-
-                    //driver.removeFigure(m.getTargX(), m.getTargY()); // TODO: CHESS SECTOR EINBAUEN, damit driver weiß ob schwarz bzw weiß
-                }
-
-                driver.movePiece(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
-            break;
-            case CASTLE:
-                switch (m.getCastleType()){
-                  //TODO: später-ich-problem
-                }
-            break;
-            case PROMOTION:
-                driver.movePiece(m.getStartX(), m.getStartY(),m.getTargX(), m.getTargY());
-                //driver.removeFigure(m.getTargX(),m.getTargY()); // TODO: CHESS SECTOR EINBAUEN, damit driver weiß ob schwarz bzw weiß
-                //driver.addFigure(m.getTargX(),m.getTargY(), m.getPiece()); TODO: KIKS BITTE AENDERE piece to char, damit wir mit den serial codes arbeiten können
-        }
-    }
-
 }

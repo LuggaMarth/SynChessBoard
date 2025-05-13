@@ -1,10 +1,12 @@
 package at.synchess.boardsoftware.front.controller;
 
 import at.synchess.boardsoftware.driver.SynChessDriver;
+import at.synchess.boardsoftware.enums.ChessBoardSector;
 import at.synchess.boardsoftware.exceptions.CCLException;
 import at.synchess.boardsoftware.front.model.AppManager;
 
 import at.synchess.boardsoftware.front.model.ControllerUtils;
+import at.synchess.exceptions.ChessException;
 import at.synchess.utils.ChessBoard;
 import at.synchess.utils.ChessNotation;
 import at.synchess.utils.Move;
@@ -19,6 +21,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +50,8 @@ public class GameController {
     Image[] pieceImages;
     List<ImageView> currPieces;
 
+    @FXML
+    private TextArea taChatBox;
 
     @FXML
     private Label labelTimer;
@@ -100,7 +105,7 @@ public class GameController {
 
         if (!isCreator) {
             controller.timer.startTicking(timer.getSecondsLeft().getValue());
-            logic.getClient().post(gameId, "START");
+            logic.getClient().post(gameId, "M:START");
         }
 
         primaryStage.getScene().setRoot(root);
@@ -111,12 +116,23 @@ public class GameController {
     public void setAppManager(AppManager appManager) {
         this.appManager = appManager;
     }
-
+    //X
     @FXML
-    void sendClicked(ActionEvent event) {
-        //TODO: SynChessDriver.scanBoard()
+    void sendClicked(ActionEvent event) throws MqttException, CCLException {
+        char[] boardScan = appManager.getDriver().scan(ChessBoardSector.CENTER_BOARD);
+        chessUtils.loadInput(boardScan);
+        Move m;
+        try {
+            if ((m = chessUtils.detectMove()) != null ) {
+            displayMove(m);
+            appManager.getClient().post(gameId,ChessNotation.asAnnotation(m));
+            appManager.getClient().post(gameId,"M:" + ChessNotation.asAnnotation(m));
+            } else throw new ChessException("No move found");
+        } catch (ChessException e) {
+            ControllerUtils.showWarning("Illegal move, please try again", appManager.getPrimaryStage());
+        }
     }
-
+    //X
     @FXML
     public void initialize() {
 
@@ -142,25 +158,31 @@ public class GameController {
     }
 
 
-
+//X
     /**
      * Opened by the ChessClient, whenever a Mqtt-Announcement is received
      * @param message Message
      */
     public void onMessageReceived(String message){
         Platform.runLater(()-> {
-            if(!message.equals("START"))
+            if(!message.startsWith("M:"))
             {
                 String[] data = message.split(" ");
                 Move m = ChessNotation.parseAnnotation(data[0]);
                 chessUtils.applyMove(m);
                 displayMove(m);
+
                 try {
-                    ControllerUtils.commitMove(m, chessUtils, scd);
+                    translateMove(m);
                 } catch (CCLException e) {
-                    ControllerUtils.showWarning("Couldn't move piece successful- Please move it manually", appManager.getPrimaryStage());
+                    ControllerUtils.showWarning("Couldn't move shit, pls do it urself", appManager.getPrimaryStage());
                 }
+
             }
+            else {
+                taChatBox.appendText(message.substring(2) + "\n");
+            }
+
         });
 
     }
@@ -170,8 +192,43 @@ public class GameController {
        postMQTT("TIMEOUT");
 
     }
+    //X
+    private void translateMove(Move m) throws CCLException {
+        switch (m.getMoveType()){
+            case STANDARD:
+                if (chessUtils.board[m.getTargX()][m.getTargY()] != Pieces.NONE)
+                    appManager.getDriver().removePiece(m.getTargX(),m.getTargY(), Pieces.isBlack(m.getPiece()) ? ChessBoardSector.OUT_WHITE : ChessBoardSector.OUT_BLACK);
+                appManager.getDriver().movePiece(m.getStartY(),m.getStartX(),m.getTargY(),m.getTargX());
+                break;
+            case PROMOTION:
+                appManager.getDriver().removePiece(m.getStartY(),m.getStartX(), Pieces.isBlack(m.getPiece()) ? ChessBoardSector.OUT_BLACK : ChessBoardSector.OUT_WHITE);
+                appManager.getDriver().revivePiece(m.getStartY(),m.getStartX(), Pieces.table[3][m.getPiece()]);
+            case CASTLE:
+                switch (m.getCastleType()){
+                    case 0:
+                    appManager.getDriver().movePiece(4,0,6,0);
+                    appManager.getDriver().movePiece(7,0,5,0);
+                    break;
+                    case 1:
+                        appManager.getDriver().movePiece(0,0,2,0);
+                        appManager.getDriver().movePiece(3,0,1,0);
+                    break;
+                    case 2:
+                        appManager.getDriver().movePiece(0,7,2,7);
+                        appManager.getDriver().movePiece(3,7,1,7);
+                    break;
+                    case 3:
+                        appManager.getDriver().movePiece(3,7,6,7);
+                        appManager.getDriver().movePiece(7,7,5,7);
+                    break;
 
+                }
 
+        }
+
+    }
+
+    //X
     private void displayMove(Move m){
         washBoard();
         switch (m.getMoveType()){
@@ -225,7 +282,7 @@ public class GameController {
 
     }
 
-
+    //X
     /**
      * Sets the displayed board to the state "values"
      * IDs of the pieces are notated in the ChessUtils library
@@ -247,7 +304,7 @@ public class GameController {
             }
         }
     }
-
+    //X
     private void setPiece(int piece, int y, int x){
         ImageView newPiece = new ImageView(pieceImages[piece]);
         newPiece.setFitHeight(45);
@@ -255,7 +312,7 @@ public class GameController {
         currPieces.add(newPiece);
         chessBoard.add(newPiece, x, y);
     }
-
+    //X
     private void clearTile(int y, int x){
         chessBoard.getChildren().removeIf(node -> {
             if ( GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x)

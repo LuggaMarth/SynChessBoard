@@ -32,7 +32,7 @@ public class ChessClient {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected to " + host + ":" + port);
 
-            mqttClient = new MqttClient("tcp://localhost:3110", myID);
+            mqttClient = new MqttClient("tcp://localhost:3110", myID,null);
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
             mqttClient.connect(options);
@@ -41,15 +41,20 @@ public class ChessClient {
     }
 
     public void subscribeToGame(int gameid, GameController gameController) throws MqttException{
-
             mqttClient.subscribe("" + gameid, (topic, mqttMessage) -> {
                 gameController.onMessageReceived(mqttMessage.toString());
             });
 
     }
 
+    public void unsubscribeFromGame(int gameid) throws MqttException{
+        mqttClient.unsubscribe(gameid + "");
+
+    }
+
     public void post(int gameid, String message) throws MqttException {
         MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+        mqttMessage.setQos(2);
         mqttClient.publish(gameid + "", mqttMessage);
     }
 
@@ -58,12 +63,9 @@ public class ChessClient {
             System.out.println("Client is not connected. Please connect first.");
             return null;
         }
-        out.println(message);
-        out.flush();
-
-
-            String response = in.readLine();
-            return response;
+            out.println(message);
+            out.flush();
+            return in.readLine();
     }
 
     public List<String> requestList(String message) throws IOException {
@@ -71,10 +73,8 @@ public class ChessClient {
             System.out.println("Client is not connected. Please connect first.");
             return null;
         }
-
         out.println(message);
         out.flush();
-
 
             String amount = in.readLine();
             List ret = new ArrayList();
@@ -88,14 +88,7 @@ public class ChessClient {
 
     public int joinGame(int gameID) throws IOException{
         String s = requestString("JOIN " + gameID);
-        System.out.println(s);
         return Integer.parseInt(s);
-    }
-
-    public void postMove(int gameID, String move, int secsRemaining) throws MqttException {
-        MqttMessage mm = new MqttMessage((move + " " + secsRemaining).getBytes());
-        mm.setQos(2); // QoS level 2
-        mqttClient.publish(gameID + "", mm);
     }
 
     public int createGame(String timerType, int minutes, int seconds) throws IOException {

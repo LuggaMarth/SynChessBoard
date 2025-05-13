@@ -283,5 +283,9 @@ public class SynChessDriver {
     public void closeRoutine() throws SerialPortException {
         connection.close();
     }
+
+    public void revivePiece(int startY, int startX, String s) {
+        //womp womp
+    }
     //-----------------------------------------------------------------------------------//
 }

@@ -97,6 +97,7 @@ public class GameListController {
                     } catch (AppManagerException e) {
                         ControllerUtils.showAppManagerAlert(e,primaryStage);
                     } catch (MqttException e){
+                        e.printStackTrace();
                         ControllerUtils.showServerAlert("Couldn't subscribe to topic", primaryStage);
                     }
                 }
