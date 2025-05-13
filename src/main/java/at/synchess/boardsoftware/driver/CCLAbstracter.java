@@ -11,8 +11,8 @@ import at.synchess.boardsoftware.enums.StepDirection;
 public class CCLAbstracter {
     public static final int HALF_FIELD_STP = 150;
     public static final int FULL_FIELD_STP = 300;
-    public static final int STEPS_TO_FIRST_FIELD_Y = 270;
-    public static final int STEPS_TO_FIRST_FIELD_X = 1150; // TODO: CHANGE THAT
+    public static final int STEPS_TO_FIRST_FIELD_Y = 210;
+    public static final int STEPS_TO_FIRST_FIELD_X = 1225;
 
     private static final String COMMAND_AVAILABLE = "A";
     private static final String COMMAND_READ_CENTER = "R2";
@@ -27,20 +27,11 @@ public class CCLAbstracter {
 
 
     //---------------------------------- Utility Commands ----------------------------------//
-
-    /**
-     * isDriverAvailable(): Checks if the driver is available
-     * @return command
-     */
-    public String isDriverAvailable() {
-        return COMMAND_AVAILABLE + SEPARATOR;
-    }
-
     /**
      * home(): Return CoreXY to (0 0)
      */
     public String home() {
-        return COMMAND_HOME + SEPARATOR;
+        return COMMAND_HOME + SEPARATOR + COMMAND_WAIT + 100 + SEPARATOR;
     }
 
     /**
@@ -48,7 +39,9 @@ public class CCLAbstracter {
      * @param milliseconds time to wait
      * @return command
      */
-    public String wait(int milliseconds) { return COMMAND_WAIT + milliseconds + SEPARATOR; }
+    public String wait(int milliseconds) {
+        return COMMAND_WAIT + milliseconds + SEPARATOR;
+    }
     //--------------------------------------------------------------------------------------//
 
 

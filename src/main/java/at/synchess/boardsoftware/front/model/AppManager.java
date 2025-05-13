@@ -23,7 +23,7 @@ public class AppManager {
     private final Stage primaryStage;
     private final ChessClient client;
 
-    public AppManager(Stage primaryStage) throws CCLException {
+    public AppManager(Stage primaryStage) throws CCLException, SerialPortException {
         this.primaryStage = primaryStage;
 
         CCLAbstracter cclAbstracter = new CCLAbstracter();

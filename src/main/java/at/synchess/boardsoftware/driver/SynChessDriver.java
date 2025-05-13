@@ -1,5 +1,8 @@
 package at.synchess.boardsoftware.driver;
 
+import static at.synchess.boardsoftware.driver.CCLAbstracter.*;
+import static at.synchess.boardsoftware.enums.ChessBoardSector.*;
+
 import at.synchess.boardsoftware.driver.connection.IDriverConnection;
 import at.synchess.boardsoftware.enums.ChessBoardSector;
 import at.synchess.boardsoftware.enums.StepDirection;
@@ -34,8 +37,7 @@ public class SynChessDriver {
                 movePiecePathFinder(x1, y1, x2, y2) +
                 abstracter.magnetOff();
 
-        System.out.println(command);
-        //executeSplitCommand(command, 60);
+        executeSplitCommand(command, 60);
     }
 
     /**
@@ -58,7 +60,7 @@ public class SynChessDriver {
         }
 
         // if is on the same line vertically
-        if (x1 == x2) {
+        else if (x1 == x2) {
             endCommand.append(abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP));
             endCommand.append(abstracter.step((y1 < y2) ? StepDirection.DOWN : StepDirection.UP, (Math.max(y1, y2) - Math.min(y1, y2)) * CCLAbstracter.FULL_FIELD_STP));
             endCommand.append(abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP));
@@ -89,38 +91,36 @@ public class SynChessDriver {
      * @param x X - Coordinate
      * @param y Y - Coordinate
      */
-    public void removePiece(int x, int y, ChessBoardSector sector) throws CCLException {
-        /*char[] scannedField = scan(sector);
+    public char[] removePiece(int x, int y, ChessBoardSector sector) throws CCLException {
+        char[] scannedField = scan(sector);
         int firstFreeIndex = -1, index = 0;
 
         // check which index is the first free one
         while(firstFreeIndex == -1 && index < scannedField.length) {
-            if(scannedField[index] != '0') firstFreeIndex = index;
+            if(scannedField[index] == '0') firstFreeIndex = index;
 
             index++;
         }
-        */
-        int firstFreeIndex = 7;
+
         int yfin = firstFreeIndex / 2;
 
         // build move command
         String command = abstracter.magnetOff() +
                 abstracter.home() +
-                abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + y * CCLAbstracter.FULL_FIELD_STP) + // going to y1
+                abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + y * FULL_FIELD_STP) + // going to y1
                 abstracter.stepRight(CCLAbstracter.STEPS_TO_FIRST_FIELD_X + x * CCLAbstracter.FULL_FIELD_STP) + // going to x1
                 abstracter.magnetOn() +
                 abstracter.wait(300) +
                 abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP) + // take it out of the field
                 abstracter.stepUp(y * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) + // step up to the first field
-                abstracter.stepLeft(x * CCLAbstracter.FULL_FIELD_STP) +
-                ((sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(0)) : (abstracter.stepLeft(210+2*CCLAbstracter.FULL_FIELD_STP))) + // which sector to go to TODO Distanz zum ersten feld vom jeweiligen out
-                ((firstFreeIndex % 2 != 0) ? (abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP)) : "") + // if typ is on right, then go right
+                ((sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(2585-(x * CCLAbstracter.FULL_FIELD_STP))) : (abstracter.stepLeft(210+CCLAbstracter.FULL_FIELD_STP+(x * CCLAbstracter.FULL_FIELD_STP)))) + // which sector to go to TODO Distanz zum ersten feld vom jeweiligen out
+                ((firstFreeIndex % 2 != 0 && sector == ChessBoardSector.OUT_WHITE) ? (abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP)) : "") + // if typ is on right, then go right
                 abstracter.stepDown(yfin * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) +
-                abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP) +
+                ((firstFreeIndex % 2 == 0) ? abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP) : abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP)) +
                 abstracter.magnetOff();
 
-        System.out.println(command);
-        //executeSplitCommand(command, 80);
+        executeSplitCommand(command, 80);
+        return scannedField;
     }
 
     /**
@@ -129,31 +129,55 @@ public class SynChessDriver {
      * @param y From where Y
      * @param piece which piece
      */
-    public void revivePiece(int x, int y, char piece, ChessBoardSector sector) throws CCLException {
-        // remove old piece
-        removePiece(x, y, sector);
-
-        // retrieve new piece
+    public void revivePiece(int x, int y, String piece, ChessBoardSector sector) throws CCLException {
         char[] scannedField = scan(sector);
         int indexOfPiece = -1, index = 0;
 
         // check where the piece is located
         while(indexOfPiece == -1 && index < scannedField.length) {
-            if(scannedField[index] == piece) indexOfPiece = index;
+            if(piece.contains(scannedField[index] + "")) indexOfPiece = index;
             index++;
         }
 
-        // if piece could not be found
+        int yfin = indexOfPiece / 2;
         if(indexOfPiece == -1) throw new CCLException("Piece not in out!");
 
-        // build command
-        String command = abstracter.magnetOff();
+        // remove old piece
+        removePiece(x, y, sector);
 
-        // TODO: Build the command
+        // build command
+        String command = abstracter.magnetOff() +
+                abstracter.home() +
+                abstracter.stepDown(CCLAbstracter.STEPS_TO_FIRST_FIELD_Y + yfin * CCLAbstracter.FULL_FIELD_STP) + // going to y1
+                abstracter.stepRight((sector == OUT_BLACK) ? 400 : 3825) + // steps to first out field
+                ((indexOfPiece % 2 != 0) ? (abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP)) : "") + // if typ is on right, then go right
+                abstracter.magnetOn() +
+                abstracter.wait(300) +
+                abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP) +
+                abstracter.stepUp(yfin * CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP);
+
+        if(sector == ChessBoardSector.OUT_WHITE) {
+            command += abstracter.stepLeft(CCLAbstracter.FULL_FIELD_STP) +
+                    abstracter.stepLeft((indexOfPiece % 2 != 0) ? CCLAbstracter.FULL_FIELD_STP : 0) +
+                    abstracter.stepLeft(200) +
+                    abstracter.stepLeft((6-x) * CCLAbstracter.FULL_FIELD_STP) +
+                    abstracter.stepDown(y*CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) +
+                    abstracter.stepLeft(CCLAbstracter.HALF_FIELD_STP) +
+                    abstracter.magnetOff();
+        }
+
+        else {
+            command += abstracter.stepRight(CCLAbstracter.FULL_FIELD_STP) +
+                    abstracter.stepRight((indexOfPiece % 2 == 0) ? CCLAbstracter.FULL_FIELD_STP : 0) +
+                    abstracter.stepRight(210) +
+                    abstracter.stepRight(x*CCLAbstracter.FULL_FIELD_STP) +
+                    abstracter.stepDown(y*CCLAbstracter.FULL_FIELD_STP + CCLAbstracter.HALF_FIELD_STP) +
+                    abstracter.stepRight(CCLAbstracter.HALF_FIELD_STP) +
+                    abstracter.magnetOff();
+        }
 
         // send of to arduino
-        System.out.println(command);
-        //executeSplitCommand(command, 60);
+        executeSplitCommand(command, 60);
     }
     //---------------------------------------------------------------------------------//
 
@@ -169,7 +193,6 @@ public class SynChessDriver {
      */
     public char[] scan(ChessBoardSector sector) throws CCLException {
         String command = "";
-        char[] returnVal;
 
         switch (sector) {
             case OUT_BLACK -> command = abstracter.readOutBlack();
@@ -177,9 +200,7 @@ public class SynChessDriver {
             case OUT_WHITE -> command = abstracter.readOutWhite();
         }
 
-        String ret = sendToArduinoBlocking(abstracter.home() + command, 80);
-        returnVal = ret.toCharArray();
-        return returnVal;
+        return sendToArduinoBlocking(abstracter.home() + command, 80).toCharArray();
     }
     //--------------------------------------------------------------------------------//
 
@@ -195,26 +216,22 @@ public class SynChessDriver {
      * @throws CCLException no
      */
     private String sendToArduinoBlocking(String command, int timeout) throws CCLException {
-        try {
-            long startTime = System.currentTimeMillis();
-            String retval = null;
+        long startTime = System.currentTimeMillis();
+        String retval = null;
 
-            connection.write(command);
-            connection.flushSerialPort();
+        connection.write(command);
+        connection.flush();
 
-            // read (*1000 for milliseconds)
-            while (((System.currentTimeMillis() - startTime) < (timeout * 1000L)) && (retval == null || retval.isEmpty())) {
-                retval = connection.readString();
-            }
-
-            if (retval == null) {
-                throw new CCLException("Timed out!");
-            }
-
-            return retval;
-        } catch (SerialPortException e) {
-            throw new CCLException(e.getMessage());
+        // read (*1000 for milliseconds)
+        while (((System.currentTimeMillis() - startTime) < (timeout * 1000L)) && (retval == null || retval.isEmpty())) {
+            retval = connection.read();
         }
+
+        if (retval == null) {
+            throw new CCLException("Timed out!");
+        }
+
+        return retval;
     }
 
     /**
@@ -223,8 +240,7 @@ public class SynChessDriver {
      *
      * @param command sends the given command directly to the serial port
      */
-    public String executeSplitCommand(String command, int timeout) throws CCLException {
-        String returnValue = "";
+    public void executeSplitCommand(String command, int timeout) throws CCLException {
         String[] commandsToSend;
 
         // split command
@@ -244,10 +260,8 @@ public class SynChessDriver {
             }
         } else {
             // write command
-            returnValue = sendToArduinoBlocking(command, timeout);
+            sendToArduinoBlocking(command, timeout);
         }
-
-        return returnValue;
     }
     //-------------------------------------------------------------------------------------//
 
