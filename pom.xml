@@ -12,6 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>23</javafx.version>
+        <javafx.classifier>win</javafx.classifier>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
 
         <maven.compiler.source>23</maven.compiler.source>
@@ -30,6 +31,32 @@
                 <configuration>
                     <mainClass>at.synchess.boardsoftware.Main</mainClass>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>at.synchess:ChessBoard</artifact>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>at.synchess.boardsoftware.App</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
@@ -89,8 +116,6 @@
             <groupId>at.synchess</groupId>
             <artifactId>ChessBoard</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/ChessBoard.jar</systemPath>
         </dependency>
 
         <dependency>

@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: at.synchess.boardsoftware.Main
-Class-Path: javafx-controls-23.jar javafx-base-23.jar slf4j-api-1.7.36.j
- ar jssc-2.9.6.jar javafx-base-23-win.jar ChessUtils.jar javafx-controls
- -23-win.jar javafx-graphics-23-win.jar javafx-fxml-23.jar javafx-graphi
- cs-23.jar native-lib-loader-2.5.0.jar javafx-fxml-23-win.jar
-

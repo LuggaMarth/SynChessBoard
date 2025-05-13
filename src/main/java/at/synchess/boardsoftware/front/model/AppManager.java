@@ -13,7 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import java.io.IOException;
 
 /**
- * Class for managing the App and gluing all the scenes and
+ * Class for managing the at.synchess.boardsoftware.App and gluing all the scenes and
  * controllers together
  *
  * @author Kilian Nussbaumer
