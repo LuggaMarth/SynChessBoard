@@ -1,5 +1,7 @@
 package at.synchess.boardsoftware.front.controller;
 
+import at.synchess.boardsoftware.Main;
+import at.synchess.boardsoftware.utils.NetworkManager;
 import at.synchess.boardsoftware.utils.RaspiManager;
 import at.synchess.boardsoftware.exceptions.AppManagerException;
 import at.synchess.boardsoftware.front.model.AppManager;
@@ -148,5 +150,9 @@ public class GameListController {
         turnOffButton.setGraphic(ControllerUtils.getFontIcon("fas-power-off", 16, Color.WHITE));
         developerButton.setGraphic(ControllerUtils.getFontIcon("fas-code", 16, Color.WHITE));
         backButton.setGraphic(ControllerUtils.getFontIcon("fas-long-arrow-alt-left", 32, Color.WHITE));
+
+        ipLbl.setText(NetworkManager.getIpV4AddressAsString(Main.INTERFACE_NAME));
+
+        line.endXProperty().bind(lineLogoHolder.widthProperty().subtract(25));
     }
 }

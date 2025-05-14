@@ -140,19 +140,19 @@ public class GameController {
         currPieces = new ArrayList<>();
         // Initialize the chess pieces on the board
         pieceImages = new Image[]{
-                new Image(getClass().getResource("/images/pieces/white_Pawn.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_Pawn.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_Pawn.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_Knight.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_Knight.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_Rook.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_Rook.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_Bishop.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_Bishop.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_Queen.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_Queen.png").toString()),
-                new Image(getClass().getResource("/images/pieces/white_King.png").toString()),
-                new Image(getClass().getResource("/images/pieces/black_King.png").toString())};
+                new Image(getClass().getResource("/images/pieces/white_pawn.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_pawn.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_pawn.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_knight.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_knight.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_rook.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_rook.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_bishop.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_bishop.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_queen.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_queen.png").toString()),
+                new Image(getClass().getResource("/images/pieces/white_king.png").toString()),
+                new Image(getClass().getResource("/images/pieces/black_king.png").toString())};
 
 
     }

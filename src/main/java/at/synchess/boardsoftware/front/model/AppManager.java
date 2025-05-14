@@ -19,22 +19,23 @@ import java.io.IOException;
  * @author Kilian Nussbaumer
  */
 public class AppManager {
-    private final SynChessDriver driver;
+    private SynChessDriver driver;
     private final Stage primaryStage;
-    private final ChessClient client;
+    private ChessClient client;
 
-    public AppManager(Stage primaryStage) throws CCLException, SerialPortException {
+    public AppManager(Stage primaryStage, String host) throws CCLException, SerialPortException {
         this.primaryStage = primaryStage;
 
-        CCLAbstracter cclAbstracter = new CCLAbstracter();
-        driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
 
         try {
-            client = new ChessClient("LocalHost");
+            client = new ChessClient(host);
         } catch (IOException | MqttException e){
-           throw new CCLException("Couldn't connect to client");
+            e.printStackTrace();
+            throw new CCLException("Couldn't connect to client");
         }
 
+        CCLAbstracter cclAbstracter = new CCLAbstracter();
+        this.driver = new SynChessDriver(cclAbstracter, new SerialDriverConnector());
         primaryStage.setOnCloseRequest(event ->{
             try {
                 client.close();
@@ -66,8 +67,9 @@ public class AppManager {
      */
     public void showDeveloperScreen() throws AppManagerException {
         try {
-            DevScreenController.show(getPrimaryStage(), this);
+            DevScreenController.show(getPrimaryStage(), this, driver);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new AppManagerException(DevScreenController.class);
         }
     }
@@ -99,9 +101,9 @@ public class AppManager {
 
     public void showGame(int gameId, boolean isCreator) throws AppManagerException, MqttException {
         try {
-
             GameController.show(getPrimaryStage(), this, gameId,driver, isCreator, client.getTimer(gameId));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new AppManagerException(GameController.class);
         }
     }

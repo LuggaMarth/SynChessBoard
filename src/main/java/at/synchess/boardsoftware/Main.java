@@ -20,8 +20,9 @@ import java.util.Scanner;
 public class Main extends Application {
     public static String INTERFACE_NAME = "eth0";
     public AppManager appManager;
+    public static String host = "localhost";
 
-    public static void main(String[] args) throws SerialPortException {
+    public static void main(String[] args) {
         String command;
         Scanner sc = new Scanner(System.in);
         CCLAbstracter cclAbstracter = new CCLAbstracter();
@@ -50,22 +51,15 @@ public class Main extends Application {
         } while(!command.equals("exit"));
 
          */
+        if(args[0] != null) host = args[0];
+        if(args[1] != null) INTERFACE_NAME = args[1];
         launch(args);
     }
-
-    private static void printCharArray(char[] arr) {
-        for (char c : arr) {
-            System.out.print(c);
-        }
-
-        System.out.println();
-    }
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
-            appManager = new AppManager(primaryStage);
+            appManager = new AppManager(primaryStage, host);
             appManager.showTitleScreen();
         } catch (CCLException s){
             ControllerUtils.showSafeAlert(s.getMessage());

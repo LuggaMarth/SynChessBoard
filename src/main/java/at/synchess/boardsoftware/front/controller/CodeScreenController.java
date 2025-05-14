@@ -65,7 +65,6 @@ public class CodeScreenController {
         controller.setPrimaryStage(primaryStage);
 
         primaryStage.getScene().setRoot(root);
-        Platform.runLater(() -> primaryStage.setFullScreen(true));
     }
 
     // setters
