@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 /**
  * Main: Handles the start of the JavaFX - Application.
- * @author Kilian Nussbaumer & Luca Marth
+ * @author Kilian Nussbaumer & Luca Marth & Nur Gott Weiß wie das funktioniert
  */
 public class Main extends Application {
     public static String INTERFACE_NAME = "eth0";
